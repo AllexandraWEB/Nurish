@@ -1,13 +1,13 @@
-import './styles/App.css'
-import LoginPage from './pages/login';
-import RegisterPage from './pages/register';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import "./styles/App.css";
+import LoginPage from "./pages/login";
+import RegisterPage from "./pages/register";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
     <>
       <Router>
-        <div className="App">
+        <div>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
@@ -15,7 +15,7 @@ function App() {
         </div>
       </Router>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

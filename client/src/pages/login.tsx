@@ -1,11 +1,15 @@
 import { LoginForm } from "@/components/auth/signin-form";
+import SplashCursor from "@/components/SplashCursor";
 
 export default function LoginPage() {
   return (
-    <div className="bg-background flex min-h-svh flex-col items-center justify-center gap-6 p-6 md:p-10">
-      <div className="w-full max-w-sm">
-        <LoginForm />
+    <>
+      <div className="w-full h-screen bg-[url('/src/assets/images/Background.png')] bg-cover bg-no-repeat bg-center">
+        <div className="w-full max-w-sm mx-auto py-20">
+          <LoginForm />
+        </div>
       </div>
-    </div>
-  )
+      <SplashCursor />
+    </>
+  );
 }
