@@ -1,0 +1,39 @@
+
+# Node & Build Artifacts
+node_modules/
+dist/
+build/
+coverage/
+
+# Environment Files
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+vite-error.log*
+
+# Editor / OS Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Cache
+.cache/
+.vite/
+eslintcache
+*.tsbuildinfo
+
+# Misc
+*.local
+*.log
+*.bak
+*.tmp
