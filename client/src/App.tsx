@@ -1,6 +1,6 @@
-import LoginSection from './components/auth/Login';
-import RegisterSection from './components/auth/Register';
 import './styles/App.css'
+import LoginPage from './pages/login';
+import RegisterPage from './pages/register';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 function App() {
@@ -9,8 +9,8 @@ function App() {
       <Router>
         <div className="App">
           <Routes>
-            <Route path="/login" element={<LoginSection />} />
-            <Route path="/register" element={<RegisterSection />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
           </Routes>
         </div>
       </Router>
