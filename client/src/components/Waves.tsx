@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, CSSProperties } from 'react';
+import React, { useRef, useEffect } from 'react';
+import type { CSSProperties } from 'react';
 
 class Grad {
   x: number;
