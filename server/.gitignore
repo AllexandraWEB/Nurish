@@ -1,0 +1,68 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage reports
+coverage/
+*.lcov
+
+# Build output
+dist/
+build/
+tmp/
+temp/
+
+# IDE / Editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# MongoDB local data (if any)
+data/db/
+dump/
+
+# Cache
+.cache/
+.parcel-cache/
+.next/
+.nuxt/
+.svelte-kit/
+.eslintcache
+
+# TypeScript build artifacts
+*.tsbuildinfo
+
+# Optional: lock files if using multiple package managers (keep only one)
+# yarn.lock
+# package-lock.json
+# pnpm-lock.yaml
+
+# Miscellaneous
+*.tgz
+*.bak
+*.old

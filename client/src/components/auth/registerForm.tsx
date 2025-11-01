@@ -2,8 +2,65 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import { Button } from "../ui/button";
 import Separator from "../Separator";
+import { useState, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 
 const RegisterForm = () => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [repeatPassword, setRepeatPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const navigate = (typeof useNavigate === "function" ? useNavigate() : null) as any;
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    if (password !== repeatPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+    setLoading(true);
+    try {
+      const res = await fetch("http://localhost:5001/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ name, email, password }),
+      });
+      
+      let data;
+      try {
+        data = await res.json();
+      } catch (parseError) {
+        throw new Error("Server response error. Please check if the server is running.");
+      }
+      
+      if (!res.ok) {
+        throw new Error(data?.message || "Registration failed");
+      }
+      
+      localStorage.removeItem("token");
+      localStorage.setItem("user", JSON.stringify(data.user));
+      
+      if (navigate) {
+        navigate("/");
+      } else if (typeof window !== "undefined") {
+        window.location.href = "/";
+      }
+    } catch (err: any) {
+      console.error("Registration error:", err);
+      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        setError("Cannot connect to server. Make sure the server is running on port 5001.");
+      } else {
+        setError(err.message || "Something went wrong");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="w-full max-w-[500px] bg-linear-to-b from-[#2c2c2c] to-[#0a0a0a] px-4 py-12 text-center text-white rounded-3xl shadow-2xl mx-auto">
       <div className="flex flex-col items-center justify-center">
@@ -34,23 +91,26 @@ const RegisterForm = () => {
           }}
           noValidate
           autoComplete="off"
+          onSubmit={handleSubmit}
         >
           {/* Input Fields */}
-          <TextField label="Full Name" variant="outlined" />
-          <TextField label="Email Address" variant="outlined" />
-          <TextField label="Password" variant="outlined" type="password" />
-          <TextField
-            label="Repeat Password"
-            variant="outlined"
-            type="password"
-          />
+          <TextField label="Full Name" variant="outlined" value={name} onChange={(e) => setName(e.target.value)} />
+          <TextField label="Email Address" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <TextField label="Password" variant="outlined" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+          <TextField label="Repeat Password" variant="outlined" type="password" value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} />
+
+          {error && (
+            <div className="w-10/12 text-left text-sm text-red-400 mt-1">{error}</div>
+          )}
           {/* Submit Button */}
           <Button
             variant="default"
             size="lg"
             className="mt-4 w-10/12 bg-white uppercase text-black font-semibold rounded-xl hover:opacity-90 transition"
+            type="submit"
+            disabled={loading}
           >
-            Submit
+            {loading ? "Submitting..." : "Submit"}
           </Button>
           {/* Separator */}
           <div className="w-10/12">

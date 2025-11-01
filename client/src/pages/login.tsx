@@ -1,6 +1,6 @@
 import { Leaf } from "lucide-react";
 import LoginForm from "@/components/auth/loginForm";
-// import SplashCursor from "@/components/SplashCursor";
+import SplashCursor from "@/components/SplashCursor";
 import Waves from "@/components/Waves";
 
 export default function LoginPage() {
@@ -42,7 +42,7 @@ export default function LoginPage() {
       </div>
 
       {/* Cursor effect */}
-      {/* <SplashCursor /> */}
+      <SplashCursor />
     </>
   );
 }
