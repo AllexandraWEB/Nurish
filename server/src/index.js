@@ -4,6 +4,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
+import authRoutes from './routes/authRoutes.js';
 
 dotenv.config();
 
@@ -22,8 +23,11 @@ app.use(express.json());
 app.use(morgan('dev'));
 app.use(cookieParser());
 
-import authRoutes from './routes/authRoutes.js';
 app.use('/api/auth', authRoutes);
+
+app.get('/', (req, res) => {
+  res.send('Backend is running');
+});
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
