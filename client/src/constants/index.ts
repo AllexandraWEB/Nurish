@@ -5,3 +5,17 @@ export const navLinks = [
     { name: "My Recipes", href: "/my-recipes" },
   ];
   
+export const heroSlides = [
+  {
+    id: 1,
+    title: "Premium Restaurant",
+    subtitle: "in your home",
+    image: "/images/hero-background-1.png",
+  },
+  {
+    id: 2,
+    title: "Gourmet Experience",
+    subtitle: "for every occasion",
+    image: "/images/hero-background-3.png",
+  },
+];
