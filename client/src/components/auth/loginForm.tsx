@@ -56,7 +56,7 @@ const LoginForm = () => {
   }
 
   return (
-    <div className="w-full max-w-[500px] bg-linear-to-b from-[#2c2c2c] to-[#0a0a0a] px-4 py-12 text-center text-white rounded-3xl shadow-2xl mx-auto">
+    <div className="w-full max-w-[500px] bg-[#160000] px-4 py-12 text-center text-white rounded-3xl shadow-2xl mx-auto">
       <div className="flex flex-col items-center justify-center">
         <h1 className="text-[44px] font-bold px-10 mb-1"><span className="italic font-thin">Welcome</span> Back</h1>
         <p className="text-base text-gray-400 mb-4">

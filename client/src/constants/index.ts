@@ -14,8 +14,8 @@ export const heroSlides = [
   },
   {
     id: 2,
-    title: "Gourmet Experience",
-    subtitle: "for every occasion",
+    title: "Premium Restaurant",
+    subtitle: "in your home",
     image: "/images/hero-background-3.png",
   },
 ];

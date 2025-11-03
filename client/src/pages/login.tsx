@@ -1,20 +1,11 @@
-import { Leaf } from "lucide-react";
 import LoginForm from "@/components/auth/loginForm";
-import SplashCursor from "@/components/SplashCursor";
+// import SplashCursor from "@/components/SplashCursor";
 import Waves from "@/components/Waves";
 
 export default function LoginPage() {
   return (
     <>
-      <div className="relative flex items-center justify-center w-full h-screen overflow-hidden bg-linear-to-b from-[#2c2c2c] to-[#0a0a0a]">
-        {/* Logo (Top-left) */}
-        <div className="absolute top-6 left-8 flex items-center gap-2 z-20">
-          <Leaf className="w-6 h-6" />
-          <h1 className="text-white text-2xl font-semibold tracking-wide">
-            Nurish
-          </h1>
-        </div>
-
+      <div className="relative flex items-center justify-center w-full h-screen overflow-hidden bg-[#160000]">
         {/* Waves background */}
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="relative w-[950px] h-[950px] rounded-full overflow-hidden">
@@ -42,7 +33,7 @@ export default function LoginPage() {
       </div>
 
       {/* Cursor effect */}
-      <SplashCursor />
+      {/* <SplashCursor /> */}
     </>
   );
 }

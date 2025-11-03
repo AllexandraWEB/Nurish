@@ -40,11 +40,11 @@ const HeroSection = () => {
       ))}
 
       {/* Text content */}
-      <div className="relative z-10 text-right space-y-2 backdrop-blur-sm bg-black/20 p-6 rounded-2xl">
-        <h1 className="text-7xl font-thin uppercase">
+      <div className="relative z-10 text-right space-y-1 p-6 rounded-2xl">
+        <h1 className="text-6xl uppercase text-center font-semibold font-body">
           {heroSlides[currentIndex].title}
         </h1>
-        <h2 className="text-5xl italic lowercase">
+        <h2 className="text-8xl uppercase text-center font-thin">
           {heroSlides[currentIndex].subtitle}
         </h2>
       </div>
