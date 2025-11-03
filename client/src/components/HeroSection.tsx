@@ -1,10 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { heroSlides } from "@/constants";
 
 const HeroSection = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [fadeState, setFadeState] = useState<"fade-in" | "fade-out">("fade-in");
+  const [animateOnce, setAnimateOnce] = useState(true); 
+
+  useEffect(() => {
+    // Disable animation after first load
+    const timer = setTimeout(() => setAnimateOnce(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const nextSlide = () => {
     setFadeState("fade-out");
@@ -41,10 +48,19 @@ const HeroSection = () => {
 
       {/* Text content */}
       <div className="relative z-10 text-right space-y-1 p-6 rounded-2xl">
-        <h1 className="text-6xl uppercase text-center font-semibold font-body">
+        <h1
+          className={`text-6xl uppercase text-center font-semibold font-body ${
+            animateOnce ? "hero-text" : ""
+          }`}
+        >
           {heroSlides[currentIndex].title}
         </h1>
-        <h2 className="text-8xl uppercase text-center font-thin">
+
+        <h2
+          className={`text-8xl uppercase text-center font-thin ${
+            animateOnce ? "hero-text" : ""
+          }`}
+        >
           {heroSlides[currentIndex].subtitle}
         </h2>
       </div>
