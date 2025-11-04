@@ -1,39 +1,23 @@
 import LoginForm from "@/components/auth/loginForm";
-// import SplashCursor from "@/components/SplashCursor";
-import Waves from "@/components/Waves";
 
 export default function LoginPage() {
   return (
-    <>
-      <div className="relative flex items-center justify-center w-full h-screen overflow-hidden bg-[#160000]">
-        {/* Waves background */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="relative w-[950px] h-[950px] rounded-full overflow-hidden">
-            <Waves
-              lineColor="#7d7d7d"
-              backgroundColor="transparent"
-              waveSpeedX={0.02}
-              waveSpeedY={0.01}
-              waveAmpX={30}
-              waveAmpY={40}
-              friction={0.7}
-              tension={0.1}
-              maxCursorMove={180}
-              xGap={15}
-              yGap={12}
-              className="absolute inset-0"
-            />
-          </div>
-        </div>
-
-        {/* Login form in the center (above waves) */}
-        <div className="relative z-10">
-          <LoginForm />
-        </div>
+    <div className="w-full h-screen flex">
+      {/* Left Side - Form */}
+      <div className="w-1/2 flex items-center justify-center bg-[#160000]">
+        <LoginForm />
       </div>
 
-      {/* Cursor effect */}
-      {/* <SplashCursor /> */}
-    </>
+      {/* Right Side - Image */}
+      <div className="w-1/2 relative overflow-hidden bg-[#160000] flex items-center justify-center">
+        <div className="relative w-full overflow-hidden p-4">
+          <img
+            src="/images/login-background.jpg"
+            alt=""
+            className="rounded-4xl"
+          />
+        </div>
+      </div>
+    </div>
   );
 }

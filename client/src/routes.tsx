@@ -1,0 +1,21 @@
+import { Routes, Route, useLocation } from "react-router-dom";
+import HeroSection from "./components/HeroSection";
+import LoginPage from "./pages/login";
+import RegisterPage from "./pages/register";
+import Navigation from "./layouts/Navigation";
+
+export default function AppRoutes() {
+  const location = useLocation();
+  const isAuthPage = ['/login', '/register'].includes(location.pathname);
+
+  return (
+    <>
+      {!isAuthPage && <Navigation />}
+      <Routes>
+        <Route path="/" element={<HeroSection />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+      </Routes>
+    </>
+  );
+}
