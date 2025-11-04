@@ -1,4 +1,5 @@
 import { registerUser, loginUser } from '../services/authService.js';
+import { setAuthCookie, clearAuthCookie } from '../utils/tokenUtils.js';
 
 export async function handleRegister(req, res) {
   try {
@@ -7,14 +8,9 @@ export async function handleRegister(req, res) {
       return res.status(400).json({ message: 'Email and password are required' });
     }
     const result = await registerUser({ name, email, password });
-    const isProd = process.env.NODE_ENV === 'production';
-    res.cookie('token', result.token, {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: isProd ? 'none' : 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000
-    });
-    return res.status(201).json({ user: result.user });
+    setAuthCookie(res, result.token);
+    // Also return token for environments where cross-site cookies are blocked
+    return res.status(201).json({ user: result.user, token: result.token });
   } catch (err) {
     const status = err.status || 500;
     return res.status(status).json({ message: err.message || 'Server error' });
@@ -28,14 +24,8 @@ export async function handleLogin(req, res) {
       return res.status(400).json({ message: 'Email and password are required' });
     }
     const result = await loginUser({ email, password });
-    const isProd = process.env.NODE_ENV === 'production';
-    res.cookie('token', result.token, {
-      httpOnly: true,
-      secure: isProd,
-      sameSite: isProd ? 'none' : 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000
-    });
-    return res.status(200).json({ user: result.user });
+    setAuthCookie(res, result.token);
+    return res.status(200).json({ user: result.user, token: result.token });
   } catch (err) {
     const status = err.status || 500;
     return res.status(status).json({ message: err.message || 'Server error' });
@@ -43,13 +33,13 @@ export async function handleLogin(req, res) {
 }
 
 export async function handleLogout(req, res) {
-  const isProd = process.env.NODE_ENV === 'production';
-  res.clearCookie('token', {
-    httpOnly: true,
-    secure: isProd,
-    sameSite: isProd ? 'none' : 'lax'
-  });
+  clearAuthCookie(res);
   return res.status(200).json({ message: 'Logged out' });
+}
+
+export async function handleMe(req, res) {
+  // req.user is injected by isAuth middleware
+  return res.status(200).json({ user: req.user });
 }
 
 

@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import { generateAuthToken } from '../utils/tokenUtils.js';
 
 export async function registerUser({ name, email, password }) {
   const existing = await User.findOne({ email });
@@ -12,7 +12,7 @@ export async function registerUser({ name, email, password }) {
 
   const passwordHash = await bcrypt.hash(password, 12);
   const user = await User.create({ name, email, passwordHash });
-  const token = createJwtForUser(user);
+  const token = generateAuthToken(user);
   return { user: user.toSafeJSON(), token };
 }
 
@@ -29,17 +29,8 @@ export async function loginUser({ email, password }) {
     error.status = 401;
     throw error;
   }
-  const token = createJwtForUser(user);
+  const token = generateAuthToken(user);
   return { user: user.toSafeJSON(), token };
-}
-
-function createJwtForUser(user) {
-  const secret = process.env.JWT_SECRET;
-  if (!secret) {
-    throw new Error('JWT_SECRET is not set');
-  }
-  const payload = { sub: user._id.toString(), email: user.email };
-  return jwt.sign(payload, secret, { expiresIn: '7d' });
 }
 
 

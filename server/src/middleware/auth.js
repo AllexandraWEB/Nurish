@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-export function authMiddleware(req, res, next) {
+export function isAuth(req, res, next) {
   const header = req.headers['authorization'] || '';
   const [scheme, bearerToken] = header.split(' ');
   const cookieToken = req.cookies?.token;
@@ -18,5 +18,8 @@ export function authMiddleware(req, res, next) {
     return res.status(401).json({ message: 'Unauthorized' });
   }
 }
+
+// Backward-compatible export
+export const authMiddleware = isAuth;
 
 
