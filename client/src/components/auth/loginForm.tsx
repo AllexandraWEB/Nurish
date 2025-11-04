@@ -4,6 +4,7 @@ import { Button } from "../ui/button";
 import Separator from "../Separator";
 import { useState, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
+import { apiFetch } from "@/lib/api";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -17,23 +18,10 @@ const LoginForm = () => {
     setError(null);
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5001/api/auth/login", {
+      const data = await apiFetch("/api/auth/login", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password })
       });
-      
-      let data;
-      try {
-        data = await res.json();
-      } catch (parseError) {
-        throw new Error("Server response error. Please check if the server is running.");
-      }
-      
-      if (!res.ok) {
-        throw new Error(data?.message || "Login failed");
-      }
       
       localStorage.removeItem("token");
       localStorage.setItem("user", JSON.stringify(data.user));
@@ -45,11 +33,7 @@ const LoginForm = () => {
       }
     } catch (err: any) {
       console.error("Login error:", err);
-      if (err.name === 'TypeError' && err.message.includes('fetch')) {
-        setError("Cannot connect to server. Make sure the server is running on port 5001.");
-      } else {
-        setError(err.message || "Something went wrong");
-      }
+      setError(err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
