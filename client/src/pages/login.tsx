@@ -10,11 +10,11 @@ export default function LoginPage() {
 
       {/* Right Side - Image */}
       <div className="w-1/2 relative overflow-hidden bg-[#160000] flex items-center justify-center">
-        <div className="relative w-full overflow-hidden p-4">
+        <div className="relative w-full h-full overflow-hidden p-4">
           <img
-            src="/images/login-background.jpg"
+            src="/images/auth-background.jpg"
             alt=""
-            className="rounded-4xl"
+            className="rounded-4xl w-full h-full object-cover"
           />
         </div>
       </div>
