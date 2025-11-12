@@ -5,10 +5,9 @@ import { heroSlides } from "@/constants";
 const HeroSection = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [fadeState, setFadeState] = useState<"fade-in" | "fade-out">("fade-in");
-  const [animateOnce, setAnimateOnce] = useState(true); 
+  const [animateOnce, setAnimateOnce] = useState(true);
 
   useEffect(() => {
-    // Disable animation after first load
     const timer = setTimeout(() => setAnimateOnce(false), 1000);
     return () => clearTimeout(timer);
   }, []);
@@ -47,37 +46,37 @@ const HeroSection = () => {
       ))}
 
       {/* Text content */}
-      <div className="relative z-10 text-right space-y-1 p-6 rounded-2xl">
+      <div className="relative z-10 text-right space-y-1 p-4 sm:p-6 rounded-2xl">
         <h1
-          className={`text-6xl uppercase text-center font-semibold font-body ${
+          className={`uppercase text-center font-semibold font-body ${
             animateOnce ? "hero-text" : ""
-          }`}
+          } text-3xl md:text-6xl`}
         >
           {heroSlides[currentIndex].title}
         </h1>
 
         <h2
-          className={`text-8xl uppercase text-center font-thin ${
+          className={`uppercase text-center font-thin ${
             animateOnce ? "hero-text" : ""
-          }`}
+          } text-5xl sm:text-6xl md:text-8xl`}
         >
           {heroSlides[currentIndex].subtitle}
         </h2>
       </div>
 
       {/* Navigation buttons */}
-      <div className="absolute bottom-10 left-0 right-0 flex justify-center space-x-8 z-10">
+      <div className="absolute bottom-6 sm:bottom-10 left-0 right-0 flex justify-center space-x-6 sm:space-x-8 z-10">
         <button
           onClick={prevSlide}
-          className="p-3 border border-white/50 rounded-full hover:bg-white hover:text-black transition"
+          className="p-2 sm:p-3 border border-white/50 rounded-full hover:bg-white hover:text-black transition"
         >
-          <ChevronLeft className="w-6 h-6" />
+          <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>
         <button
           onClick={nextSlide}
-          className="p-3 border border-white/50 rounded-full hover:bg-white hover:text-black transition"
+          className="p-2 sm:p-3 border border-white/50 rounded-full hover:bg-white hover:text-black transition"
         >
-          <ChevronRight className="w-6 h-6" />
+          <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>
       </div>
     </div>
