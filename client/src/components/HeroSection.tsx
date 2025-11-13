@@ -68,13 +68,13 @@ const HeroSection = () => {
       <div className="absolute bottom-6 sm:bottom-10 left-0 right-0 flex justify-center space-x-6 sm:space-x-8 z-10">
         <button
           onClick={prevSlide}
-          className="p-2 sm:p-3 border border-white/50 rounded-full hover:bg-white hover:text-black transition"
+          className="p-2 sm:p-3 border border-white/50 rounded-full hover:bg-white hover:text-black transition cursor-pointer"
         >
           <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>
         <button
           onClick={nextSlide}
-          className="p-2 sm:p-3 border border-white/50 rounded-full hover:bg-white hover:text-black transition"
+          className="p-2 sm:p-3 border border-white/50 rounded-full hover:bg-white hover:text-black transition cursor-pointer"
         >
           <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6" />
         </button>

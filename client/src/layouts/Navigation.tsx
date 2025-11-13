@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { navLinks } from "@/constants";
+import { guestNavLinks, userNavLinks } from "@/constants";
 import { Leaf, Plus, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { apiFetch } from "@/lib/api";
@@ -35,6 +35,8 @@ const Navigation = () => {
     window.location.href = "/";
   }
 
+  const links = user ? userNavLinks : guestNavLinks;
+
   return (
     <nav className="absolute top-0 left-0 w-full bg-transparent text-white z-50 font-display">
       <div className="max-w-[1288px] mx-auto flex items-center justify-between py-6 px-4 md:px-0">
@@ -47,8 +49,8 @@ const Navigation = () => {
         </div>
 
         {/* Desktop Navigation Links */}
-        <ul className="hidden md:flex space-x-10 text-lg uppercase tracking-wide">
-          {navLinks.map((link) => (
+        <ul className="hidden md:flex space-x-10 text-lg uppercase tracking-wide cursor-pointer">
+          {links.map((link) => (
             <li key={link.name}>
               <a
                 href={link.href}
@@ -112,7 +114,7 @@ const Navigation = () => {
           </button>
 
           <ul className="flex flex-col space-y-6 text-3xl uppercase tracking-widest font-light">
-            {navLinks.map((link) => (
+            {links.map((link) => (
               <li key={link.name}>
                 <a
                   href={link.href}
