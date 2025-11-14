@@ -3,6 +3,7 @@ import HeroSection from "./components/HeroSection";
 import LoginPage from "./pages/login";
 import RegisterPage from "./pages/register";
 import Navigation from "./layouts/Navigation";
+import RecipesPage from "./pages/recipesPage";
 
 export default function AppRoutes() {
   const location = useLocation();
@@ -15,6 +16,7 @@ export default function AppRoutes() {
         <Route path="/" element={<HeroSection />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/recipes" element={<RecipesPage />} />
       </Routes>
     </>
   );
