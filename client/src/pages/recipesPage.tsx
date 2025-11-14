@@ -1,12 +1,11 @@
 import Categories from "@/components/Categories";
-import Container from "@/components/Container";
 import RecipeCard from "@/components/RecipeCard";
 import SmallRecipeCard from "@/components/SmallRecipeCard";
 import { fastRecipes, RECIPES } from "@/constants";
 
 const RecipesPage = () => {
   return (
-    <Container className="mt-20 p-4 md:p-0">
+    <div className="mt-20 p-4 md:p-0 container max-w-[1288px] mx-auto">
       <div className="pt-10">
         {/* Popular Recipes Section */}
         <h1 className="recipes-headline mb-8">Popular Recipes</h1>
@@ -41,7 +40,7 @@ const RecipesPage = () => {
           </div>
         </div>
       </div>
-    </Container>
+    </div>
   );
 };
 
