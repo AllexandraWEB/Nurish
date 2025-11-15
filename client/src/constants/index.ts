@@ -121,3 +121,56 @@ export const fastRecipes = [
     image: "/recipe-images/Recipe-7.jpeg",
   },
 ];
+
+export const recipeDetails = [
+  "servings",
+  "prep time",
+  "cook time",
+]
+
+export const recipeSlides = [
+  {
+    id: 1,
+    servings: 2,
+    prepTime: "35m",
+    cookTime: "40m",
+    title: "Easy Meatballs with Arugula",
+    subtitle: "for healthy lifestyle",
+    image: "/recipe-images/Recipe-1.png",
+    video: "https://www.youtube.com/embed/XxQiY1qKv9Y?si=ic9FR0EOckMmNKew",
+  },
+];
+
+export const instructions = [
+  {
+    number: 1,
+    text: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ipsam quos sit quis placeat repudiandae. Aut, doloremque neque dolor repudiandae voluptatibus molestias natus culpa aperiam blanditiis possimus. Animi voluptates harum quaerat.`,
+  },
+  {
+    number: 2,
+    text: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ipsam quos sit quis placeat repudiandae. Aut, doloremque neque dolor repudiandae voluptatibus molestias natus culpa aperiam blanditiis possimus. Animi voluptates harum quaerat.`,
+  },
+  {
+    number: 3,
+    text: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ipsam quos sit quis placeat repudiandae. Aut, doloremque neque dolor repudiandae voluptatibus molestias natus culpa aperiam blanditiis possimus. Animi voluptates harum quaerat.`,
+  },
+  {
+    number: 4,
+    text: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ipsam quos sit quis placeat repudiandae. Aut, doloremque neque dolor repudiandae voluptatibus molestias natus culpa aperiam blanditiis possimus. Animi voluptates harum quaerat.`,
+  },
+  {
+    number: 5,
+    text: `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Ipsam quos sit quis placeat repudiandae. Aut, doloremque neque dolor repudiandae voluptatibus molestias natus culpa aperiam blanditiis possimus. Animi voluptates harum quaerat.`,
+  },
+];
+
+export const ingredients = [
+  "500g ground beef",
+  "2 cups fresh arugula",
+  "1 onion, finely chopped",
+  "2 cloves garlic, minced",
+  "1 egg",
+  "1/2 cup breadcrumbs",
+  "Salt and pepper to taste",
+  "2 tbsp olive oil",
+];

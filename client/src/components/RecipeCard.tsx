@@ -5,6 +5,7 @@ interface RecipeCardProps {
   author: string;
   minutes: number | string;
   image: string;
+  onClick?: () => void;
 }
 
 const RecipeCard: React.FC<RecipeCardProps> = ({
@@ -12,10 +13,12 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
   author,
   minutes,
   image,
+  onClick,
 }) => {
   return (
     <div className="flex gap-4 justify-center">
       <div
+        onClick={onClick}
         className="relative w-[310px] h-[480px] rounded-2xl overflow-hidden cursor-pointer bg-center bg-cover glass-border 
         transform transition-transform duration-500 ease-out hover:scale-105"
         style={{

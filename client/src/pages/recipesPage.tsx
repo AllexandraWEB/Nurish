@@ -1,9 +1,13 @@
 import Categories from "@/components/Categories";
 import RecipeCard from "@/components/RecipeCard";
 import SmallRecipeCard from "@/components/SmallRecipeCard";
+import RecipeDetailsModal from "@/components/RecipeDetailsModal";
 import { fastRecipes, RECIPES } from "@/constants";
+import { useState } from "react";
 
 const RecipesPage = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <div className="mt-20 p-4 md:p-0 container max-w-[1288px] mx-auto">
       <div className="pt-10">
@@ -17,6 +21,7 @@ const RecipesPage = () => {
               author={recipe.author}
               minutes={recipe.minutes}
               image={recipe.image}
+              onClick={() => setIsModalOpen(true)}
             />
           ))}
         </div>
@@ -40,6 +45,11 @@ const RecipesPage = () => {
           </div>
         </div>
       </div>
+
+      <RecipeDetailsModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };
