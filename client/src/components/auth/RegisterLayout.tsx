@@ -1,6 +1,6 @@
 import RegisterForm from "@/components/auth/registerForm";
 
-export default function RegisterPage() {
+export default function RegisterLayout() {
   return (
     <div className="w-full h-screen flex flex-col md:flex-row">
       {/* Left Side - Form */}

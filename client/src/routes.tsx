@@ -1,7 +1,7 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import HeroSection from "./components/HeroSection";
-import LoginPage from "./pages/login";
-import RegisterPage from "./pages/register";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
 import Navigation from "./layouts/Navigation";
 import RecipesPage from "./pages/recipesPage";
 

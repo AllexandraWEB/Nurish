@@ -39,7 +39,7 @@ const Navigation = () => {
 
   return (
     <nav className="absolute top-0 left-0 w-full bg-transparent text-white z-50 font-display">
-      <div className="max-w-[1288px] mx-auto flex items-center justify-between py-6 px-4 md:px-0">
+      <div className="max-w-[1288px] mx-auto flex items-center justify-between py-6 px-4 lg:px-0">
         {/* Logo */}
         <div className="flex gap-2 items-center text-3xl font-light tracking-widest">
           <Leaf />
@@ -49,7 +49,7 @@ const Navigation = () => {
         </div>
 
         {/* Desktop Navigation Links */}
-        <ul className="hidden md:flex space-x-10 text-lg uppercase tracking-wide cursor-pointer">
+        <ul className="hidden lg:flex space-x-10 text-lg uppercase tracking-wide cursor-pointer">
           {links.map((link) => (
             <li key={link.name}>
               <a
@@ -63,7 +63,7 @@ const Navigation = () => {
         </ul>
 
         {/* Right side buttons (desktop) */}
-        <div className="hidden md:flex items-center space-x-6">
+        <div className="hidden lg:flex items-center space-x-6">
           <Button
             variant="outline"
             size="lg"
@@ -94,7 +94,7 @@ const Navigation = () => {
 
         {/* Mobile Menu Toggle */}
         <button
-          className="md:hidden p-2"
+          className="lg:hidden p-2"
           onClick={() => setMenuOpen((prev) => !prev)}
           aria-label="Toggle Menu"
         >

@@ -1,6 +1,6 @@
-import LoginForm from "@/components/auth/loginForm";
+import LoginForm from "./loginForm";
 
-export default function LoginPage() {
+export default function LoginLayout() {
   return (
     <div className="w-full h-screen flex flex-col md:flex-row">
       {/* Left Side - Form */}

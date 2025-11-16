@@ -13,9 +13,7 @@ const Categories = () => {
                         hover:shadow-md transition-all duration-300 ease-out group"
           >
             <Icon className="w-12 h-12 text-dark-700 transition-colors duration-300" />
-            <p className="text-lg font-medium text-dark-700">
-              {category.name}
-            </p>
+            <p className="text-lg font-medium text-dark-700">{category.name}</p>
           </a>
         );
       })}
