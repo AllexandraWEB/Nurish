@@ -7,6 +7,12 @@ import { useState } from "react";
 
 const RecipesPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedRecipe, setSelectedRecipe] = useState(null);
+
+  const handleRecipeClick = (recipe: any) => {
+    setSelectedRecipe(recipe);
+    setIsModalOpen(true);
+  };
 
   return (
     <div className="mt-20 p-4 md:p-0 container max-w-[1288px] mx-auto">
@@ -21,7 +27,7 @@ const RecipesPage = () => {
               author={recipe.author}
               minutes={recipe.minutes}
               image={recipe.image}
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => handleRecipeClick(recipe)}
             />
           ))}
         </div>
@@ -40,6 +46,7 @@ const RecipesPage = () => {
                 title={recipe.title}
                 author={recipe.author}
                 image={recipe.image}
+                onClick={() => handleRecipeClick(recipe)}
               />
             ))}
           </div>
@@ -49,6 +56,7 @@ const RecipesPage = () => {
       <RecipeDetailsModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
+        recipe={selectedRecipe}
       />
     </div>
   );

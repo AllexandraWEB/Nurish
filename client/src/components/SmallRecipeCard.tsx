@@ -4,16 +4,19 @@ interface RecipeCardProps {
   title: string;
   author: string;
   image: string;
+  onClick?: () => void;
 }
 
 const SmallRecipeCard: React.FC<RecipeCardProps> = ({
   title,
   author,
   image,
+  onClick,
 }) => {
   return (
     <div className="flex gap-4 justify-center">
       <div
+        onClick={onClick}
         className="relative w-[310px] h-[340px] rounded-2xl overflow-hidden cursor-pointer bg-center bg-cover glass-border 
         transform transition-transform duration-500 ease-out hover:scale-105 group"
         style={{
@@ -28,7 +31,7 @@ const SmallRecipeCard: React.FC<RecipeCardProps> = ({
           <Heart className="text-white w-6 h-6" />
         </div>
 
-        {/* Bottom Content (appears on hover) */}
+        {/* Bottom Content */}
         <div
           className="absolute bottom-0 left-0 w-full p-4 z-10 opacity-0 
           translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 
