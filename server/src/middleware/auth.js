@@ -1,25 +1,26 @@
 import jwt from 'jsonwebtoken';
 
-export function isAuth(req, res, next) {
-  const header = req.headers['authorization'] || '';
-  const [scheme, bearerToken] = header.split(' ');
-  const cookieToken = req.cookies?.token;
-  const token = scheme === 'Bearer' && bearerToken ? bearerToken : cookieToken;
-  if (!token) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
+const auth = async (req, res, next) => {
   try {
-    const secret = process.env.JWT_SECRET;
-    if (!secret) throw new Error('JWT secret missing');
-    const decoded = jwt.verify(token, secret);
-    req.user = { id: decoded.sub, email: decoded.email };
-    next();
-  } catch (err) {
-    return res.status(401).json({ message: 'Unauthorized' });
-  }
-}
+    // Get token from cookie or Authorization header
+    const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
 
-// Backward-compatible export
-export const authMiddleware = isAuth;
+    if (!token) {
+      return res.status(401).json({ message: 'No token, authorization denied' });
+    }
+
+    // Verify token
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // Add user from payload
+    req.user = decoded;
+    next();
+  } catch (error) {
+    console.error('Auth middleware error:', error);
+    res.status(401).json({ message: 'Token is not valid' });
+  }
+};
+
+export default auth;
 
 

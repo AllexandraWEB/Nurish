@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import mongoose from 'mongoose';
 import authRoutes from './routes/authRoutes.js';
+import favoritesRoutes from './routes/favoritesRoutes.js';
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use(morgan('dev'));
 app.use(cookieParser());
 
 app.use('/api/auth', authRoutes);
+app.use('/api/favorites', favoritesRoutes);
 
 app.get('/', (req, res) => {
   res.send('Backend is running');

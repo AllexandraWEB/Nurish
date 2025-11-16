@@ -1,11 +1,15 @@
 import { Heart } from "lucide-react";
+import { useFavorites } from "@/context/FavoritesContext";
+import { useState } from "react";
 
 interface RecipeCardProps {
   title: string;
   author: string;
   minutes: number | string;
   image: string;
+  imageDetails: string;
   onClick?: () => void;
+  recipe?: any;
 }
 
 const RecipeCard: React.FC<RecipeCardProps> = ({
@@ -14,7 +18,35 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
   minutes,
   image,
   onClick,
+  recipe,
 }) => {
+  const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
+  const [isAnimating, setIsAnimating] = useState(false);
+  const favorited = isFavorite(title);
+
+  const handleFavoriteClick = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+    if (!user) {
+      window.location.href = "/login";
+      return;
+    }
+
+    setIsAnimating(true);
+    try {
+      if (favorited) {
+        await removeFromFavorites(title);
+      } else {
+        await addToFavorites(recipe || { title, author, minutes, image });
+      }
+    } catch (error) {
+      console.error("Error toggling favorite:", error);
+    } finally {
+      setTimeout(() => setIsAnimating(false), 300);
+    }
+  };
+
   return (
     <div className="flex gap-4 justify-center">
       <div
@@ -30,7 +62,20 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
 
         {/* Heart Icon */}
         <div className="absolute top-4 right-4 z-10">
-          <Heart className="text-white w-6 h-6" />
+          <button
+            onClick={handleFavoriteClick}
+            className={`transition-all duration-300 ${
+              isAnimating ? "scale-125" : "scale-100"
+            }`}
+          >
+            <Heart
+              className={`w-6 h-6 transition-all duration-300 ${
+                favorited
+                  ? "fill-red-500 text-red-500"
+                  : "text-white hover:text-red-300"
+              }`}
+            />
+          </button>
         </div>
 
         {/* Bottom Content */}

@@ -27,6 +27,7 @@ const RecipeCatalog = () => {
               author={recipe.author}
               minutes={recipe.minutes}
               image={recipe.image}
+              imageDetails={recipe.imageDetails}
               onClick={() => handleRecipeClick(recipe)}
             />
           ))}

@@ -1,45 +1,121 @@
-import { registerUser, loginUser } from '../services/authService.js';
-import { setAuthCookie, clearAuthCookie } from '../utils/tokenUtils.js';
+import * as authService from '../services/authService.js';
+import { generateAuthToken, setAuthCookie, clearAuthCookie } from '../utils/tokenUtils.js';
 
-export async function handleRegister(req, res) {
+export const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body || {};
+    console.log('=== REGISTER REQUEST ===');
+    console.log('Body:', req.body);
+    console.log('Content-Type:', req.headers['content-type']);
+    
+    // Accept both 'username' and 'name' from frontend
+    const username = req.body.username || req.body.name;
+    const { email, password } = req.body;
+
+    console.log('Extracted:', { 
+      username: username || 'MISSING', 
+      email: email || 'MISSING', 
+      password: password ? 'PROVIDED' : 'MISSING' 
+    });
+
+    if (!username || !email || !password) {
+      console.log('❌ Validation failed');
+      return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    console.log('✓ Validation passed, creating user...');
+    const user = await authService.registerUser(username, email, password);
+    const token = generateAuthToken(user._id);
+
+    setAuthCookie(res, token);
+
+    console.log('✓ User registered successfully:', user.email);
+    res.status(201).json({
+      message: 'User registered successfully',
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    console.error('❌ Register error:', error.message);
+    res.status(500).json({ message: error.message || 'Server error' });
+  }
+};
+
+export const login = async (req, res) => {
+  try {
+    console.log('=== LOGIN REQUEST ===');
+    console.log('Body:', req.body);
+    console.log('Content-Type:', req.headers['content-type']);
+    
+    const { email, password } = req.body;
+
+    console.log('Extracted:', { 
+      email: email || 'MISSING', 
+      password: password ? 'PROVIDED' : 'MISSING' 
+    });
+
     if (!email || !password) {
+      console.log('❌ Validation failed');
       return res.status(400).json({ message: 'Email and password are required' });
     }
-    const result = await registerUser({ name, email, password });
-    setAuthCookie(res, result.token);
-    // Also return token for environments where cross-site cookies are blocked
-    return res.status(201).json({ user: result.user, token: result.token });
-  } catch (err) {
-    const status = err.status || 500;
-    return res.status(status).json({ message: err.message || 'Server error' });
-  }
-}
 
-export async function handleLogin(req, res) {
-  try {
-    const { email, password } = req.body || {};
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Email and password are required' });
+    console.log('✓ Validation passed, checking credentials...');
+    const user = await authService.loginUser(email, password);
+    
+    if (!user) {
+      console.log('❌ Invalid credentials');
+      return res.status(401).json({ message: 'Invalid credentials' });
     }
-    const result = await loginUser({ email, password });
-    setAuthCookie(res, result.token);
-    return res.status(200).json({ user: result.user, token: result.token });
-  } catch (err) {
-    const status = err.status || 500;
-    return res.status(status).json({ message: err.message || 'Server error' });
+
+    const token = generateAuthToken(user._id);
+    setAuthCookie(res, token);
+
+    console.log('✓ Login successful:', user.email);
+    res.json({
+      message: 'Login successful',
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    console.error('❌ Login error:', error.message);
+    res.status(500).json({ message: error.message || 'Server error' });
   }
-}
+};
 
-export async function handleLogout(req, res) {
-  clearAuthCookie(res);
-  return res.status(200).json({ message: 'Logged out' });
-}
+export const logout = async (req, res) => {
+  try {
+    clearAuthCookie(res);
+    res.json({ message: 'Logout successful' });
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
-export async function handleMe(req, res) {
-  // req.user is injected by isAuth middleware
-  return res.status(200).json({ user: req.user });
-}
+export const getProfile = async (req, res) => {
+  try {
+    const user = await authService.getUserById(req.user.id);
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    console.error('Get profile error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
 
