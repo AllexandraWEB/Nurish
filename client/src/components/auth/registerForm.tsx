@@ -13,7 +13,9 @@ const RegisterForm = () => {
   const [repeatPassword, setRepeatPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const navigate = (typeof useNavigate === "function" ? useNavigate() : null) as any;
+  const navigate = (
+    typeof useNavigate === "function" ? useNavigate() : null
+  ) as any;
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -26,12 +28,12 @@ const RegisterForm = () => {
     try {
       const data = await apiFetch("/api/auth/register", {
         method: "POST",
-        body: JSON.stringify({ name, email, password })
+        body: JSON.stringify({ name, email, password }),
       });
-      
+
       localStorage.removeItem("token");
       localStorage.setItem("user", JSON.stringify(data.user));
-      
+
       if (navigate) {
         navigate("/");
       } else if (typeof window !== "undefined") {
@@ -48,7 +50,9 @@ const RegisterForm = () => {
   return (
     <div className="w-full max-w-[500px] bg-[#160000] px-4 py-12 text-center text-white rounded-3xl shadow-2xl mx-auto">
       <div className="flex flex-col items-start justify-center">
-        <h1 className="text-3xl md:text-[44px] font-bold px-10 mb-1"><span className="font-thin">Welcome</span> to Nurish</h1>
+        <h1 className="text-3xl md:text-[44px] font-bold px-10 mb-1">
+          <span className="font-thin">Welcome</span> to Nurish
+        </h1>
         <p className="text-base text-gray-400 mb-4 pl-10">
           Fill in the form below to create your account
         </p>
@@ -72,19 +76,46 @@ const RegisterForm = () => {
             "& .MuiInputLabel-root": {
               color: "white",
             },
+            "& .MuiInputLabel-root.Mui-focused": {
+              color: "white !important",
+            },
           }}
           noValidate
           autoComplete="off"
           onSubmit={handleSubmit}
         >
           {/* Input Fields */}
-          <TextField label="Full Name" variant="outlined" value={name} onChange={(e) => setName(e.target.value)} />
-          <TextField label="Email Address" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <TextField label="Password" variant="outlined" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-          <TextField label="Repeat Password" variant="outlined" type="password" value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} />
+          <TextField
+            label="Full Name"
+            variant="outlined"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+          <TextField
+            label="Email Address"
+            variant="outlined"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <TextField
+            label="Password"
+            variant="outlined"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <TextField
+            label="Repeat Password"
+            variant="outlined"
+            type="password"
+            value={repeatPassword}
+            onChange={(e) => setRepeatPassword(e.target.value)}
+          />
 
           {error && (
-            <div className="w-10/12 text-left text-sm text-red-400 mt-1">{error}</div>
+            <div className="w-10/12 text-left text-sm text-red-400 mt-1">
+              {error}
+            </div>
           )}
           {/* Submit Button */}
           <Button
@@ -142,7 +173,10 @@ const RegisterForm = () => {
           {/* Login Path */}
           <div className="pt-4">
             <p className="text-gray-400">
-              Already have an account? <a href="/login" className="text-gray-50">Sign in</a>
+              Already have an account?{" "}
+              <a href="/login" className="text-gray-50">
+                Sign in
+              </a>
             </p>
           </div>
         </Box>

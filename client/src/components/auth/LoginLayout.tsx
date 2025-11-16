@@ -2,14 +2,14 @@ import LoginForm from "./loginForm";
 
 export default function LoginLayout() {
   return (
-    <div className="w-full h-screen flex flex-col md:flex-row">
+    <div className="w-full h-screen flex flex-col xl:flex-row bg-[#160000]">
       {/* Left Side - Form */}
-      <div className="w-full md:w-1/2 flex items-center justify-center bg-[#160000]">
+      <div className="w-full xl:w-1/2 flex items-center justify-center my-auto">
         <LoginForm />
       </div>
 
       {/* Right Side - Image */}
-      <div className="hidden md:flex w-1/2 relative overflow-hidden bg-[#160000] items-center justify-center">
+      <div className="hidden xl:flex w-1/2 relative h-screen overflow-hidden bg-[#160000] items-center justify-center">
         <div className="relative w-full h-full overflow-hidden p-4">
           <img
             src="/images/auth-background.jpg"
