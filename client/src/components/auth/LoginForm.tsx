@@ -8,13 +8,13 @@ import { apiFetch } from "@/lib/api";
 const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
+    setIsLoading(true);
 
     try {
       const response = await apiFetch("/api/auth/login", {
@@ -24,24 +24,17 @@ const LoginForm = () => {
 
       console.log("Login response:", response);
 
-      // Save the token to localStorage
       if (response.token) {
         localStorage.setItem("token", response.token);
-        console.log("Token saved successfully");
-      }
-
-      // Save user info if needed
-      if (response.user) {
         localStorage.setItem("user", JSON.stringify(response.user));
+        console.log("Token saved successfully");
+        window.location.href = "/recipes";
       }
-
-      // Redirect to recipes page
-      window.location.href = "/recipes";
     } catch (err: any) {
       console.error("Login error:", err);
       setError(err.message || "Invalid credentials");
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 

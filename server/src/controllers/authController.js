@@ -1,18 +1,12 @@
+import { generateAuthToken } from '../utils/tokenUtils.js';
 import * as authService from '../services/authService.js';
-import { generateAuthToken, setAuthCookie, clearAuthCookie } from '../utils/tokenUtils.js';
 
 export const login = async (req, res) => {
   try {
     console.log('=== LOGIN REQUEST ===');
     console.log('Body:', req.body);
-    console.log('Content-Type:', req.headers['content-type']);
     
     const { email, password } = req.body;
-
-    console.log('Extracted:', { 
-      email: email || 'MISSING', 
-      password: password ? 'PROVIDED' : 'MISSING' 
-    });
 
     if (!email || !password) {
       console.log('❌ Validation failed');
@@ -28,12 +22,11 @@ export const login = async (req, res) => {
     }
 
     const token = generateAuthToken(user._id);
-    setAuthCookie(res, token);
 
     console.log('✓ Login successful:', user.email);
     res.json({
       message: 'Login successful',
-      token: token, // Add this line to return token in response
+      token: token,
       user: {
         id: user._id,
         username: user.username,
@@ -50,17 +43,9 @@ export const register = async (req, res) => {
   try {
     console.log('=== REGISTER REQUEST ===');
     console.log('Body:', req.body);
-    console.log('Content-Type:', req.headers['content-type']);
     
-    // Accept both 'username' and 'name' from frontend
     const username = req.body.username || req.body.name;
     const { email, password } = req.body;
-
-    console.log('Extracted:', { 
-      username: username || 'MISSING', 
-      email: email || 'MISSING', 
-      password: password ? 'PROVIDED' : 'MISSING' 
-    });
 
     if (!username || !email || !password) {
       console.log('❌ Validation failed');
@@ -71,12 +56,10 @@ export const register = async (req, res) => {
     const user = await authService.registerUser(username, email, password);
     const token = generateAuthToken(user._id);
 
-    setAuthCookie(res, token);
-
     console.log('✓ User registered successfully:', user.email);
     res.status(201).json({
       message: 'User registered successfully',
-      token: token, // Add this line to return token in response
+      token: token,
       user: {
         id: user._id,
         username: user.username,
@@ -91,7 +74,6 @@ export const register = async (req, res) => {
 
 export const logout = async (req, res) => {
   try {
-    clearAuthCookie(res);
     res.json({ message: 'Logout successful' });
   } catch (error) {
     console.error('Logout error:', error);

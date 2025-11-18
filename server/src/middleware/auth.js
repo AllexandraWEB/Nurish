@@ -1,26 +1,28 @@
 import jwt from 'jsonwebtoken';
 
-const auth = async (req, res, next) => {
+export default function(req, res, next) {
+  // Get token from Authorization header
+  const authHeader = req.header('Authorization');
+  const token = authHeader?.replace('Bearer ', '');
+
+  console.log('Auth middleware - Authorization header:', authHeader ? 'Present' : 'Missing');
+  console.log('Auth middleware - Token extracted:', token ? 'Yes' : 'No');
+
+  // Check if no token
+  if (!token) {
+    return res.status(401).json({ message: 'No token, authorization denied' });
+  }
+
   try {
-    // Get token from cookie or Authorization header
-    const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
-
-    if (!token) {
-      return res.status(401).json({ message: 'No token, authorization denied' });
-    }
-
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
-    // Add user from payload
     req.user = decoded;
+    console.log('Auth middleware - User decoded:', decoded.id);
     next();
-  } catch (error) {
-    console.error('Auth middleware error:', error);
-    res.status(401).json({ message: 'Token is not valid' });
+  } catch (err) {
+    console.error('Auth middleware - Token verification failed:', err.message);
+    res.status(401).json({ message: 'Invalid token' });
   }
-};
-
-export default auth;
+}
 
 

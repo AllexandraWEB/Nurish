@@ -22,7 +22,6 @@ const corsOptions = {
     'http://localhost:5173',
     'https://nurish.vercel.app',
   ],
-  credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 };
