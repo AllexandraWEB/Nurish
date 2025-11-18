@@ -15,14 +15,19 @@ mongoose.connect(process.env.MONGO_URI)
 
 const app = express();
 
-// Behind Render/Heroku/Vercel proxies - required so "secure" cookies work
 app.set('trust proxy', 1);
 
-const clientOrigin = process.env.CLIENT_ORIGIN || 'http://localhost:5173';
-app.use(cors({ 
-  origin: process.env.NODE_ENV === 'production' ? clientOrigin : true,
-  credentials: true 
-}));
+const corsOptions = {
+  origin: [
+    'http://localhost:5173',
+    'https://nurish.vercel.app',
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(cookieParser());

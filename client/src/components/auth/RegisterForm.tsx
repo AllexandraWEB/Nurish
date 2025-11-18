@@ -2,8 +2,7 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import { Button } from "../ui/button";
 import Separator from "../Separator";
-import { useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import { apiFetch } from "@/lib/api";
 
 const RegisterForm = () => {
@@ -13,39 +12,40 @@ const RegisterForm = () => {
   const [repeatPassword, setRepeatPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const navigate = (
-    typeof useNavigate === "function" ? useNavigate() : null
-  ) as any;
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
-    if (password !== repeatPassword) {
-      setError("Passwords do not match");
-      return;
-    }
+    setError("");
     setLoading(true);
+
     try {
-      const data = await apiFetch("/api/auth/register", {
+      const response = await apiFetch("/api/auth/register", {
         method: "POST",
         body: JSON.stringify({ name, email, password }),
       });
 
-      localStorage.removeItem("token");
-      localStorage.setItem("user", JSON.stringify(data.user));
+      console.log("Register response:", response);
 
-      if (navigate) {
-        navigate("/");
-      } else if (typeof window !== "undefined") {
-        window.location.href = "/";
+      // Save the token to localStorage
+      if (response.token) {
+        localStorage.setItem("token", response.token);
+        console.log("Token saved successfully");
       }
+
+      // Save user info if needed
+      if (response.user) {
+        localStorage.setItem("user", JSON.stringify(response.user));
+      }
+
+      // Redirect to recipes page
+      window.location.href = "/recipes";
     } catch (err: any) {
-      console.error("Registration error:", err);
-      setError(err.message || "Something went wrong");
+      console.error("Register error:", err);
+      setError(err.message || "Registration failed");
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="w-full max-w-[500px] bg-[#160000] px-4 py-12 text-center text-white rounded-3xl shadow-2xl mx-auto">
