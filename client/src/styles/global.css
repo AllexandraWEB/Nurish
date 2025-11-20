@@ -194,5 +194,13 @@
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     pointer-events: none;
+
+    @media (max-width: 768px) {
+      border: 0;
+
+      &::before {
+        display: none;
+      }
+    }
   }
 }
