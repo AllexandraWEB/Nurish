@@ -199,7 +199,40 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    
+    // Convert video URL to embed format
+    const processedData = {
+      ...formData,
+      video: formData.video ? convertToEmbedUrl(formData.video) : '',
+    };
+    
+    onSubmit(processedData);
+  };
+
+  const convertToEmbedUrl = (url: string): string => {
+    if (!url) return '';
+    
+    // Already an embed URL
+    if (url.includes('/embed/')) {
+      return url;
+    }
+    
+    // Regular YouTube URL: https://www.youtube.com/watch?v=VIDEO_ID
+    const watchMatch = url.match(/[?&]v=([^&]+)/);
+    if (watchMatch) {
+      const videoId = watchMatch[1];
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+    
+    // Short URL: https://youtu.be/VIDEO_ID
+    const shortMatch = url.match(/youtu\.be\/([^?]+)/);
+    if (shortMatch) {
+      const videoId = shortMatch[1];
+      return `https://www.youtube.com/embed/${videoId}`;
+    }
+    
+    // Return original if not a YouTube URL
+    return url;
   };
 
   if (!isOpen) return null;
