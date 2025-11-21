@@ -5,6 +5,7 @@ import RecipesPage from "./pages/RecipesPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import FavoritesPage from "./pages/FavoritesPage";
+import MyRecipesPage from "./pages/MyRecipesPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { FavoritesProvider } from "./context/FavoritesContext";
 
@@ -26,6 +27,14 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <FavoritesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-recipes"
+            element={
+              <ProtectedRoute>
+                <MyRecipesPage />
               </ProtectedRoute>
             }
           />
