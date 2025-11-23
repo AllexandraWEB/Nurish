@@ -1,15 +1,16 @@
 import { Beef, Fish, Leaf, Soup, Utensils } from "lucide-react";
 
 export const guestNavLinks = [
+  { name: "Popular Recipes", href: "/popular-recipes" },
   { name: "Recipes", href: "/recipes" },
-  { name: "Categories", href: "/categories" },
   { name: "AI Chef", href: "/ai-chef" },
 ];
 
 export const userNavLinks = [
+  { name: "Popular Recipes", href: "/popular-recipes" },
   { name: "Recipes", href: "/recipes" },
-  { name: "Categories", href: "/categories" },
-  { name: "AI Chef", href: "/ai-chef" },
+  // { name: "Categories", href: "/categories" },
+  // { name: "AI Chef", href: "/ai-chef" },
   { name: "Favorites", href: "/favorites" },
   { name: "My Recipes", href: "/my-recipes" },
 ];
