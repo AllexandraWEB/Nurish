@@ -127,7 +127,7 @@ const MyRecipesPage = () => {
             className="rounded-full"
             size="lg"
           >
-            <Plus className="mr-2" size={20} />
+            <Plus size={20} />
             Add Recipe
           </Button>
         </div>

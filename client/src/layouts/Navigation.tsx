@@ -64,14 +64,14 @@ const Navigation = () => {
 
         {/* Right side buttons (desktop) */}
         <div className="hidden lg:flex items-center space-x-6">
-          <Button
+          {/* <Button
             variant="outline"
             size="lg"
             className="rounded-full text-base flex items-center gap-2"
           >
             <Plus />
             <a href="/add-recipe">Add Recipe</a>
-          </Button>
+          </Button> */}
           {user ? (
             <Button
               variant="ghost"

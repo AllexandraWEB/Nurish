@@ -238,10 +238,10 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 overflow-hidden">
-      <div className="bg-red-400 rounded-lg w-full max-w-4xl h-[90vh] shadow-lg relative overflow-hidden flex flex-col">
-        <div className="flex justify-between items-center p-6 border-b">
-          <h2 className="text-2xl font-semibold text-gray-900">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-blur-background overflow-hidden">
+      <div className="backdrop-blur-[32px] rounded-none md:rounded-lg w-full max-w-4xl h-[90vh] shadow-lg relative overflow-hidden flex flex-col glass-border">
+        <div className="flex justify-between items-center p-6">
+          <h2 className="text-2xl md:text-4xl font-semibold text-white">
             {recipe ? "Edit Recipe" : "Add New Recipe"}
           </h2>
           <button
@@ -258,7 +258,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
         >
           {/* Image Upload */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">Recipe Image</h3>
+            <h3 className="text-lg font-semibold text-white">Recipe Image</h3>
             
             <div className="flex flex-col items-center gap-4">
               {imagePreview ? (
@@ -291,13 +291,13 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
                   {isUploading ? (
                     <div className="text-center">
                       <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
-                      <p className="text-gray-600">Uploading...</p>
+                      <p className="text-gray-200">Uploading...</p>
                     </div>
                   ) : (
                     <>
-                      <ImageIcon size={48} className="text-gray-400 mb-4" />
-                      <p className="text-gray-600">Click to upload image</p>
-                      <p className="text-sm text-gray-400 mt-2">PNG, JPG up to 5MB</p>
+                      <ImageIcon size={48} className="text-gray-200 mb-4" />
+                      <p className="text-gray-200">Click to upload image</p>
+                      <p className="text-sm text-gray-200 mt-2">PNG, JPG up to 5MB</p>
                     </>
                   )}
                 </label>
@@ -307,7 +307,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
 
           {/* Basic Info */}
           <div className="space-y-4">
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold text-white">
               Basic Information
             </h3>
             <div>
@@ -395,7 +395,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
           {/* Ingredients */}
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="text-lg font-semibold text-white">
                 Ingredients
               </h3>
               <Button
@@ -432,7 +432,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
           {/* Instructions */}
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="text-lg font-semibold text-white">
                 Instructions
               </h3>
               <Button
@@ -473,7 +473,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
           </div>
         </form>
 
-        <div className="border-t p-6 flex justify-end gap-4">
+        <div className="p-6 flex justify-end gap-4">
           <Button type="button" onClick={onClose} variant="outline">
             Cancel
           </Button>
