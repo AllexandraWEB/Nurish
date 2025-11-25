@@ -27,6 +27,10 @@ const recipeSchema = new mongoose.Schema({
     text: String,
   }],
   recipeDetails: [String],
+  isPublic: {
+    type: Boolean,
+    default: false,
+  },
 }, {
   timestamps: true,
 });

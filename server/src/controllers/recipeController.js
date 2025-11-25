@@ -1,9 +1,9 @@
 import Recipe from '../models/Recipe.js';
 
-// Get all public recipes
+// Get all PUBLIC recipes only (for Community Recipes page)
 export const getAllRecipes = async (req, res) => {
   try {
-    const recipes = await Recipe.find()
+    const recipes = await Recipe.find({ isPublic: true })
       .populate('author', 'name')
       .sort({ createdAt: -1 });
     
@@ -20,12 +20,12 @@ export const getAllRecipes = async (req, res) => {
   }
 };
 
-// Get user's recipes (only recipes they created)
+// Get user's recipes (both public and private, only recipes they created)
 export const getMyRecipes = async (req, res) => {
   try {
     console.log('Getting recipes for user:', req.user.userId);
     
-    // Only find recipes where the author matches the logged-in user
+    // Find ALL recipes created by this user (public and private)
     const recipes = await Recipe.find({ author: req.user.userId })
       .populate('author', 'name')
       .sort({ createdAt: -1 });
@@ -53,6 +53,11 @@ export const getRecipeById = async (req, res) => {
     
     if (!recipe) {
       return res.status(404).json({ message: 'Recipe not found' });
+    }
+
+    // Check if recipe is public or if user is the author
+    if (!recipe.isPublic && recipe.author._id.toString() !== req.user?.userId) {
+      return res.status(403).json({ message: 'Access denied' });
     }
     
     const recipeWithAuthor = {
@@ -82,6 +87,7 @@ export const createRecipe = async (req, res) => {
     const recipeData = {
       ...req.body,
       author: req.user.userId,
+      // isPublic is included from req.body
     };
     
     console.log('Create recipe - recipeData:', recipeData);

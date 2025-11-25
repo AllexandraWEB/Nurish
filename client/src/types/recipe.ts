@@ -4,7 +4,7 @@ export type Recipe = {
   subtitle?: string;
   author: string;
   authorId?: string;
-  minutes: string;
+  minutes: number | string;
   image?: string;
   imageDetails: string;
   servings?: string;
@@ -14,6 +14,7 @@ export type Recipe = {
   ingredients?: string[];
   instructions?: { number: number; text: string }[];
   recipeDetails?: string[];
+  isPublic?: boolean;
 };
 
 export type RecipeFormData = Omit<Recipe, '_id'>;

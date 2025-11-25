@@ -65,7 +65,10 @@ const RecipesSection = () => {
     try {
       await apiFetch("/api/recipes", {
         method: "POST",
-        body: JSON.stringify(recipeData),
+        body: JSON.stringify({
+          ...recipeData,
+          isPublic: true, // Public recipes for community
+        }),
       });
       setIsFormOpen(false);
       fetchAllRecipes(); // Refresh the recipes list

@@ -52,7 +52,10 @@ const MyRecipesSection = () => {
     try {
       await apiFetch("/api/recipes", {
         method: "POST",
-        body: JSON.stringify(recipe),
+        body: JSON.stringify({
+          ...recipe,
+          isPublic: false, // Private recipes for personal use
+        }),
       });
       setIsFormOpen(false);
       fetchMyRecipes();
