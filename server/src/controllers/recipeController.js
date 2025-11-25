@@ -7,7 +7,6 @@ export const getAllRecipes = async (req, res) => {
       .populate('author', 'name')
       .sort({ createdAt: -1 });
     
-    // Transform the response to include author name
     const recipesWithAuthor = recipes.map(recipe => ({
       ...recipe.toObject(),
       author: recipe.author?.name || 'Unknown',
@@ -21,12 +20,17 @@ export const getAllRecipes = async (req, res) => {
   }
 };
 
-// Get user's recipes
+// Get user's recipes (only recipes they created)
 export const getMyRecipes = async (req, res) => {
   try {
+    console.log('Getting recipes for user:', req.user.userId);
+    
+    // Only find recipes where the author matches the logged-in user
     const recipes = await Recipe.find({ author: req.user.userId })
       .populate('author', 'name')
       .sort({ createdAt: -1 });
+    
+    console.log(`Found ${recipes.length} recipes created by user`);
     
     const recipesWithAuthor = recipes.map(recipe => ({
       ...recipe.toObject(),
