@@ -15,34 +15,22 @@ export const addToFavorites = async (req, res) => {
 
     const { recipe } = req.body;
 
-    // Find or create the recipe in the database
-    let existingRecipe = await Recipe.findOne({ title: recipe.title });
-
-    if (!existingRecipe) {
-      console.log('Recipe not found, creating new recipe...');
-      // Create new recipe if it doesn't exist
-      existingRecipe = new Recipe({
-        title: recipe.title,
-        subtitle: recipe.subtitle || '',
-        author: req.user.userId,
-        minutes: recipe.minutes?.toString() || '0',
-        image: recipe.image || '',
-        imageDetails: recipe.imageDetails || recipe.image || '',
-        servings: recipe.servings || '',
-        prepTime: recipe.prepTime || '',
-        cookTime: recipe.cookTime || '',
-        video: recipe.video || '',
-        ingredients: recipe.ingredients || [],
-        instructions: recipe.instructions || [],
-        recipeDetails: recipe.recipeDetails || [],
-      });
-      await existingRecipe.save();
-      console.log('New recipe created:', existingRecipe._id);
+    // Find the recipe by ID or title (don't create a new one)
+    let existingRecipe;
+    
+    if (recipe._id) {
+      existingRecipe = await Recipe.findById(recipe._id);
     } else {
-      console.log('Recipe already exists:', existingRecipe._id);
+      existingRecipe = await Recipe.findOne({ title: recipe.title });
     }
 
-    // Find user and update favorites using findByIdAndUpdate
+    if (!existingRecipe) {
+      return res.status(404).json({ message: 'Recipe not found. Cannot favorite a recipe that does not exist.' });
+    }
+
+    console.log('Found existing recipe:', existingRecipe._id);
+
+    // Find user and check if already favorited
     const user = await User.findById(req.user.userId);
     
     if (!user) {
@@ -61,7 +49,7 @@ export const addToFavorites = async (req, res) => {
       });
     }
 
-    // Add to favorites using updateOne to avoid validation issues
+    // Add to favorites using updateOne
     await User.updateOne(
       { _id: req.user.userId },
       { $push: { favorites: existingRecipe._id } }
