@@ -1,85 +1,103 @@
 import Recipe from '../models/Recipe.js';
 
-// Get all recipes
+// Get all public recipes
 export const getAllRecipes = async (req, res) => {
   try {
-    const recipes = await Recipe.find().populate('author', 'username email');
-    res.json(recipes);
+    const recipes = await Recipe.find()
+      .populate('author', 'name')
+      .sort({ createdAt: -1 });
+    
+    // Transform the response to include author name
+    const recipesWithAuthor = recipes.map(recipe => ({
+      ...recipe.toObject(),
+      author: recipe.author?.name || 'Unknown',
+      authorId: recipe.author?._id,
+    }));
+    
+    res.json(recipesWithAuthor);
   } catch (error) {
-    console.error('Get recipes error:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error fetching recipes:', error);
+    res.status(500).json({ message: 'Failed to fetch recipes' });
   }
 };
 
 // Get user's recipes
-export const getUserRecipes = async (req, res) => {
+export const getMyRecipes = async (req, res) => {
   try {
-    const recipes = await Recipe.find({ author: req.user.id });
-    res.json(recipes);
+    const recipes = await Recipe.find({ author: req.user.userId })
+      .populate('author', 'name')
+      .sort({ createdAt: -1 });
+    
+    const recipesWithAuthor = recipes.map(recipe => ({
+      ...recipe.toObject(),
+      author: recipe.author?.name || 'You',
+      authorId: recipe.author?._id,
+    }));
+    
+    res.json(recipesWithAuthor);
   } catch (error) {
-    console.error('Get user recipes error:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error fetching user recipes:', error);
+    res.status(500).json({ message: 'Failed to fetch recipes' });
   }
 };
 
-// Get single recipe
-export const getRecipe = async (req, res) => {
+// Get single recipe by ID
+export const getRecipeById = async (req, res) => {
   try {
-    const recipe = await Recipe.findById(req.params.id).populate('author', 'username email');
+    const recipe = await Recipe.findById(req.params.id)
+      .populate('author', 'name');
+    
     if (!recipe) {
       return res.status(404).json({ message: 'Recipe not found' });
     }
-    res.json(recipe);
+    
+    const recipeWithAuthor = {
+      ...recipe.toObject(),
+      author: recipe.author?.name || 'Unknown',
+      authorId: recipe.author?._id,
+    };
+    
+    res.json(recipeWithAuthor);
   } catch (error) {
-    console.error('Get recipe error:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error fetching recipe:', error);
+    res.status(500).json({ message: 'Failed to fetch recipe' });
   }
 };
 
-// Create recipe
+// Create new recipe
 export const createRecipe = async (req, res) => {
   try {
-    const {
-      title,
-      subtitle,
-      minutes,
-      image,
-      imageDetails,
-      servings,
-      prepTime,
-      cookTime,
-      video,
-      recipeDetails,
-      ingredients,
-      instructions,
-    } = req.body;
-
-    if (!title || !minutes) {
-      return res.status(400).json({ message: 'Title and cooking time are required' });
+    console.log('Create recipe - req.user:', req.user);
+    console.log('Create recipe - userId:', req.user?.userId);
+    console.log('Create recipe - body:', req.body);
+    
+    if (!req.user?.userId) {
+      return res.status(401).json({ message: 'User not authenticated' });
     }
-
-    const recipe = new Recipe({
-      title,
-      subtitle,
-      author: req.user.id,
-      authorName: req.user.username,
-      minutes,
-      image,
-      imageDetails: imageDetails || image,
-      servings,
-      prepTime,
-      cookTime,
-      video,
-      recipeDetails,
-      ingredients,
-      instructions,
-    });
-
+    
+    const recipeData = {
+      ...req.body,
+      author: req.user.userId,
+    };
+    
+    console.log('Create recipe - recipeData:', recipeData);
+    
+    const recipe = new Recipe(recipeData);
     await recipe.save();
-    res.status(201).json(recipe);
+    
+    const populatedRecipe = await Recipe.findById(recipe._id)
+      .populate('author', 'name');
+    
+    const recipeWithAuthor = {
+      ...populatedRecipe.toObject(),
+      author: populatedRecipe.author?.name || 'You',
+      authorId: populatedRecipe.author?._id,
+    };
+    
+    res.status(201).json(recipeWithAuthor);
   } catch (error) {
-    console.error('Create recipe error:', error);
-    res.status(500).json({ message: error.message || 'Server error' });
+    console.error('Error creating recipe:', error);
+    res.status(500).json({ message: 'Failed to create recipe', error: error.message });
   }
 };
 
@@ -87,26 +105,32 @@ export const createRecipe = async (req, res) => {
 export const updateRecipe = async (req, res) => {
   try {
     const recipe = await Recipe.findById(req.params.id);
-
+    
     if (!recipe) {
       return res.status(404).json({ message: 'Recipe not found' });
     }
-
+    
     // Check if user is the author
-    if (recipe.author.toString() !== req.user.id) {
+    if (recipe.author.toString() !== req.user.userId) {
       return res.status(403).json({ message: 'Not authorized to update this recipe' });
     }
-
+    
     const updatedRecipe = await Recipe.findByIdAndUpdate(
       req.params.id,
-      { ...req.body, updatedAt: Date.now() },
-      { new: true }
-    );
-
-    res.json(updatedRecipe);
+      req.body,
+      { new: true, runValidators: true }
+    ).populate('author', 'name');
+    
+    const recipeWithAuthor = {
+      ...updatedRecipe.toObject(),
+      author: updatedRecipe.author?.name || 'You',
+      authorId: updatedRecipe.author?._id,
+    };
+    
+    res.json(recipeWithAuthor);
   } catch (error) {
-    console.error('Update recipe error:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error updating recipe:', error);
+    res.status(500).json({ message: 'Failed to update recipe' });
   }
 };
 
@@ -114,20 +138,21 @@ export const updateRecipe = async (req, res) => {
 export const deleteRecipe = async (req, res) => {
   try {
     const recipe = await Recipe.findById(req.params.id);
-
+    
     if (!recipe) {
       return res.status(404).json({ message: 'Recipe not found' });
     }
-
+    
     // Check if user is the author
-    if (recipe.author.toString() !== req.user.id) {
+    if (recipe.author.toString() !== req.user.userId) {
       return res.status(403).json({ message: 'Not authorized to delete this recipe' });
     }
-
+    
     await Recipe.findByIdAndDelete(req.params.id);
+    
     res.json({ message: 'Recipe deleted successfully' });
   } catch (error) {
-    console.error('Delete recipe error:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error('Error deleting recipe:', error);
+    res.status(500).json({ message: 'Failed to delete recipe' });
   }
 };

@@ -2,26 +2,27 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { apiFetch } from "@/lib/api";
 
 type Recipe = {
+  _id?: string;
   title: string;
   subtitle?: string;
   author: string;
   minutes: number | string;
-  image: string;
-  imageDetails?: string;
+  image?: string;
+  imageDetails: string;
   servings?: string;
   prepTime?: string;
   cookTime?: string;
   video?: string;
-  recipeDetails?: string[];
   ingredients?: string[];
   instructions?: { number: number; text: string }[];
+  recipeDetails?: string[];
 };
 
 type FavoritesContextType = {
   favorites: Recipe[];
   addToFavorites: (recipe: Recipe) => Promise<void>;
-  removeFromFavorites: (recipeTitle: string) => Promise<void>;
-  isFavorite: (recipeTitle: string) => boolean;
+  removeFromFavorites: (title: string) => Promise<void>;
+  isFavorite: (title: string) => boolean;
   loading: boolean;
 };
 
@@ -40,25 +41,20 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({
   }, []);
 
   const fetchFavorites = async () => {
-    const user = JSON.parse(localStorage.getItem("user") || "null");
     try {
-      if (!user) {
-        setLoading(false);
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setFavorites([]);
         return;
       }
 
       const data = await apiFetch("/api/favorites");
-      setFavorites(data.favorites || []);
-      console.log("Loaded favorites from API:", data.favorites);
+      console.log("Fetched favorites:", data);
+      setFavorites(data);
     } catch (error) {
-      console.error("Failed to fetch favorites:", error);
-      // Fallback to localStorage if API fails
-      const savedFavorites = localStorage.getItem(
-        `favorites_${user.id || user.email}`
-      );
-      if (savedFavorites) {
-        setFavorites(JSON.parse(savedFavorites));
-      }
+      console.error("Error fetching favorites:", error);
+      setFavorites([]);
     } finally {
       setLoading(false);
     }
@@ -66,66 +62,40 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const addToFavorites = async (recipe: Recipe) => {
     try {
-      const user = JSON.parse(localStorage.getItem("user") || "null");
-      if (!user) {
-        throw new Error("User not logged in");
-      }
-
-      // Ensure imageDetails is set (use image if imageDetails doesn't exist)
-      const recipeToSave = {
-        ...recipe,
-        imageDetails: recipe.imageDetails || recipe.image,
-      };
-
-      const data = await apiFetch("/api/favorites", {
+      console.log("Adding to favorites:", recipe);
+      const response = await apiFetch("/api/favorites/add", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ recipe: recipeToSave }),
+        body: JSON.stringify({ recipe }),
       });
-
-      setFavorites(data.favorites || [...favorites, recipeToSave]);
-      console.log("Recipe added to favorites:", recipe.title);
+      console.log("Add to favorites response:", response);
+      await fetchFavorites(); // Refresh the list
     } catch (error) {
-      console.error("Failed to add to favorites:", error);
+      console.error("Error adding to favorites:", error);
       throw error;
     }
   };
 
-  const removeFromFavorites = async (recipeTitle: string) => {
+  const removeFromFavorites = async (title: string) => {
     try {
-      const user = JSON.parse(localStorage.getItem("user") || "null");
-      if (!user) {
-        throw new Error("User not logged in");
-      }
-
-      const data = await apiFetch(
-        `/api/favorites/${encodeURIComponent(recipeTitle)}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      setFavorites(data.favorites || favorites.filter((r) => r.title !== recipeTitle));
-      console.log("Recipe removed from favorites:", recipeTitle);
+      console.log("Removing from favorites:", title);
+      await apiFetch("/api/favorites/remove", {
+        method: "POST",
+        body: JSON.stringify({ title }),
+      });
+      await fetchFavorites(); // Refresh the list
     } catch (error) {
-      console.error("Failed to remove from favorites:", error);
+      console.error("Error removing from favorites:", error);
       throw error;
     }
   };
 
-  const isFavorite = (recipeTitle: string) => {
-    return favorites.some((recipe) => recipe.title === recipeTitle);
+  const isFavorite = (title: string) => {
+    return favorites.some((fav) => fav.title === title);
   };
 
   return (
     <FavoritesContext.Provider
-      value={{
-        favorites,
-        addToFavorites,
-        removeFromFavorites,
-        isFavorite,
-        loading,
-      }}
+      value={{ favorites, addToFavorites, removeFromFavorites, isFavorite, loading }}
     >
       {children}
     </FavoritesContext.Provider>

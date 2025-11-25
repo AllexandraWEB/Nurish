@@ -9,16 +9,18 @@ type Recipe = {
   _id?: string;
   title: string;
   subtitle?: string;
-  minutes: string;
+  author: string;
+  authorId?: string;
+  minutes: number | string;
   image?: string;
-  imageDetails?: string;
+  imageDetails: string;
   servings?: string;
   prepTime?: string;
   cookTime?: string;
   video?: string;
-  recipeDetails?: string[];
   ingredients?: string[];
   instructions?: { number: number; text: string }[];
+  recipeDetails?: string[];
 };
 
 type RecipeFormProps = {
@@ -28,15 +30,39 @@ type RecipeFormProps = {
   recipe?: Recipe | null;
 };
 
+// Convert YouTube URL to embed format
+const convertToEmbedUrl = (url: string): string => {
+  if (!url) return '';
+  
+  if (url.includes('/embed/')) {
+    return url;
+  }
+  
+  const watchMatch = url.match(/[?&]v=([^&]+)/);
+  if (watchMatch) {
+    const videoId = watchMatch[1];
+    return `https://www.youtube.com/embed/${videoId}`;
+  }
+  
+  const shortMatch = url.match(/youtu\.be\/([^?]+)/);
+  if (shortMatch) {
+    const videoId = shortMatch[1];
+    return `https://www.youtube.com/embed/${videoId}`;
+  }
+  
+  return url;
+};
+
 const RecipeForm: React.FC<RecipeFormProps> = ({
   isOpen,
   onClose,
   onSubmit,
   recipe,
 }) => {
-  const [formData, setFormData] = useState<Recipe>({
+  const [formData, setFormData] = useState<Partial<Recipe>>({
     title: "",
     subtitle: "",
+    author: "",
     minutes: "",
     image: "",
     imageDetails: "",
@@ -60,9 +86,13 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
       });
       setImagePreview(recipe.image || "");
     } else {
+      // Get user info for author
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
       setFormData({
         title: "",
         subtitle: "",
+        author: user.name || "",
+        authorId: user.id,
         minutes: "",
         image: "",
         imageDetails: "",
@@ -76,7 +106,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
       });
       setImagePreview("");
     }
-  }, [recipe]);
+  }, [recipe, isOpen]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -89,15 +119,11 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    console.log('File selected:', file.name, file.type, file.size);
-
-    // Validate file type
     if (!file.type.startsWith('image/')) {
       alert('Please select an image file');
       return;
     }
 
-    // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       alert('Image size must be less than 5MB');
       return;
@@ -106,23 +132,16 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
     try {
       setIsUploading(true);
 
-      // Convert to base64
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onloadend = async () => {
         try {
           const base64String = reader.result as string;
-          console.log('Base64 string created, length:', base64String.length);
-          console.log('Base64 prefix:', base64String.substring(0, 100));
           
-          // Upload to Cloudinary via your backend
-          console.log('Sending to backend...');
           const response = await apiFetch('/api/upload', {
             method: 'POST',
             body: JSON.stringify({ image: base64String }),
           });
-
-          console.log('Upload response:', response);
 
           if (response.url) {
             setFormData((prev) => ({
@@ -131,7 +150,6 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
               imageDetails: response.url,
             }));
             setImagePreview(response.url);
-            console.log('Image uploaded successfully:', response.url);
           } else {
             throw new Error('No URL returned from upload');
           }
@@ -200,39 +218,28 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Convert video URL to embed format
-    const processedData = {
-      ...formData,
+    // Get user info for author
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    
+    const processedData: Recipe = {
+      _id: recipe?._id,
+      title: formData.title || "",
+      subtitle: formData.subtitle,
+      author: user.name || formData.author || "Anonymous",
+      authorId: user.id || formData.authorId,
+      minutes: formData.minutes || "0",
+      image: formData.image,
+      imageDetails: formData.imageDetails || formData.image || "",
+      servings: formData.servings,
+      prepTime: formData.prepTime,
+      cookTime: formData.cookTime,
       video: formData.video ? convertToEmbedUrl(formData.video) : '',
+      ingredients: formData.ingredients?.filter(i => i.trim() !== ''),
+      instructions: formData.instructions?.filter(i => i.text.trim() !== ''),
+      recipeDetails: formData.recipeDetails,
     };
     
     onSubmit(processedData);
-  };
-
-  const convertToEmbedUrl = (url: string): string => {
-    if (!url) return '';
-    
-    // Already an embed URL
-    if (url.includes('/embed/')) {
-      return url;
-    }
-    
-    // Regular YouTube URL: https://www.youtube.com/watch?v=VIDEO_ID
-    const watchMatch = url.match(/[?&]v=([^&]+)/);
-    if (watchMatch) {
-      const videoId = watchMatch[1];
-      return `https://www.youtube.com/embed/${videoId}`;
-    }
-    
-    // Short URL: https://youtu.be/VIDEO_ID
-    const shortMatch = url.match(/youtu\.be\/([^?]+)/);
-    if (shortMatch) {
-      const videoId = shortMatch[1];
-      return `https://www.youtube.com/embed/${videoId}`;
-    }
-    
-    // Return original if not a YouTube URL
-    return url;
   };
 
   if (!isOpen) return null;
@@ -240,13 +247,13 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-blur-background overflow-hidden">
       <div className="backdrop-blur-[32px] rounded-none md:rounded-lg w-full max-w-4xl h-[90vh] shadow-lg relative overflow-hidden flex flex-col glass-border">
-        <div className="flex justify-between items-center p-6">
-          <h2 className="text-2xl md:text-4xl font-semibold text-white">
+        <div className="flex justify-between items-center p-6 border-b border-white/10">
+          <h2 className="text-2xl font-semibold text-white">
             {recipe ? "Edit Recipe" : "Add New Recipe"}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-300 hover:text-white"
           >
             <X size={24} />
           </button>
@@ -290,14 +297,14 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
                   />
                   {isUploading ? (
                     <div className="text-center">
-                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
-                      <p className="text-gray-200">Uploading...</p>
+                      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white mx-auto mb-4"></div>
+                      <p className="text-gray-300">Uploading...</p>
                     </div>
                   ) : (
                     <>
-                      <ImageIcon size={48} className="text-gray-200 mb-4" />
-                      <p className="text-gray-200">Click to upload image</p>
-                      <p className="text-sm text-gray-200 mt-2">PNG, JPG up to 5MB</p>
+                      <ImageIcon size={48} className="text-gray-400 mb-4" />
+                      <p className="text-gray-300">Click to upload image</p>
+                      <p className="text-sm text-gray-400 mt-2">PNG, JPG up to 5MB</p>
                     </>
                   )}
                 </label>
@@ -311,91 +318,99 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
               Basic Information
             </h3>
             <div>
-              <Label htmlFor="title">Recipe Title *</Label>
+              <Label htmlFor="title" className="text-white">Recipe Title *</Label>
               <Input
                 id="title"
                 name="title"
                 value={formData.title}
                 onChange={handleInputChange}
                 required
-                className="mt-1"
+                className="mt-1 bg-white/10 border-white/20 text-white"
               />
             </div>
 
             <div>
-              <Label htmlFor="subtitle">Subtitle</Label>
+              <Label htmlFor="subtitle" className="text-white">Subtitle</Label>
               <Input
                 id="subtitle"
                 name="subtitle"
                 value={formData.subtitle}
                 onChange={handleInputChange}
-                className="mt-1"
+                className="mt-1 bg-white/10 border-white/20 text-white"
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="minutes">Cooking Time (minutes) *</Label>
+                <Label htmlFor="minutes" className="text-white">Cooking Time (minutes) *</Label>
                 <Input
                   id="minutes"
                   name="minutes"
                   value={formData.minutes}
                   onChange={handleInputChange}
                   required
-                  className="mt-1"
+                  className="mt-1 bg-white/10 border-white/20 text-white"
                 />
               </div>
               <div>
-                <Label htmlFor="servings">Servings</Label>
+                <Label htmlFor="servings" className="text-white">Servings</Label>
                 <Input
                   id="servings"
                   name="servings"
                   value={formData.servings}
                   onChange={handleInputChange}
-                  className="mt-1"
+                  className="mt-1 bg-white/10 border-white/20 text-white"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="prepTime">Prep Time</Label>
+                <Label htmlFor="prepTime" className="text-white">Prep Time</Label>
                 <Input
                   id="prepTime"
                   name="prepTime"
                   value={formData.prepTime}
                   onChange={handleInputChange}
-                  className="mt-1"
+                  className="mt-1 bg-white/10 border-white/20 text-white"
                 />
               </div>
               <div>
-                <Label htmlFor="cookTime">Cook Time</Label>
+                <Label htmlFor="cookTime" className="text-white">Cook Time</Label>
                 <Input
                   id="cookTime"
                   name="cookTime"
                   value={formData.cookTime}
                   onChange={handleInputChange}
-                  className="mt-1"
+                  className="mt-1 bg-white/10 border-white/20 text-white"
                 />
               </div>
             </div>
 
             <div>
-              <Label htmlFor="video">Video URL</Label>
+              <Label htmlFor="video" className="text-white">Video URL (YouTube)</Label>
               <Input
                 id="video"
                 name="video"
                 value={formData.video}
                 onChange={handleInputChange}
-                className="mt-1"
+                onBlur={(e) => {
+                  const embedUrl = convertToEmbedUrl(e.target.value);
+                  setFormData((prev) => ({ ...prev, video: embedUrl }));
+                }}
+                placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/..."
+                className="mt-1 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
               />
+              <p className="text-xs text-gray-400 mt-1">
+                Paste any YouTube URL - it will be automatically converted to embed format
+              </p>
             </div>
           </div>
 
           {/* Ingredients */}
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="text-lg font-semibold text-white">
                 Ingredients
               </h3>
               <Button
@@ -403,6 +418,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
                 onClick={addIngredient}
                 size="sm"
                 variant="outline"
+                className="border-white/20 text-white hover:bg-white/10"
               >
                 <Plus size={16} className="mr-1" />
                 Add Ingredient
@@ -414,6 +430,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
                   value={ingredient}
                   onChange={(e) => handleIngredientChange(index, e.target.value)}
                   placeholder={`Ingredient ${index + 1}`}
+                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
                 />
                 {formData.ingredients && formData.ingredients.length > 1 && (
                   <Button
@@ -421,6 +438,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
                     onClick={() => removeIngredient(index)}
                     size="sm"
                     variant="outline"
+                    className="border-white/20 text-white hover:bg-red-500/20"
                   >
                     <Trash2 size={16} />
                   </Button>
@@ -432,7 +450,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
           {/* Instructions */}
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-gray-900">
+              <h3 className="text-lg font-semibold text-white">
                 Instructions
               </h3>
               <Button
@@ -440,6 +458,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
                 onClick={addInstruction}
                 size="sm"
                 variant="outline"
+                className="border-white/20 text-white hover:bg-white/10"
               >
                 <Plus size={16} className="mr-1" />
                 Add Step
@@ -447,7 +466,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
             </div>
             {formData.instructions?.map((instruction, index) => (
               <div key={index} className="flex gap-2">
-                <div className="flex items-center justify-center w-8 h-10 bg-gray-100 rounded text-gray-700 font-semibold">
+                <div className="flex items-center justify-center w-8 h-10 bg-white/10 rounded text-white font-semibold">
                   {index + 1}
                 </div>
                 <textarea
@@ -456,7 +475,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
                     handleInstructionChange(index, e.target.value)
                   }
                   placeholder={`Step ${index + 1}`}
-                  className="flex-1 min-h-[100px] px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 min-h-[100px] px-3 py-2 bg-white/10 border border-white/20 rounded-md text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50"
                 />
                 {formData.instructions && formData.instructions.length > 1 && (
                   <Button
@@ -464,6 +483,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
                     onClick={() => removeInstruction(index)}
                     size="sm"
                     variant="outline"
+                    className="border-white/20 text-white hover:bg-red-500/20"
                   >
                     <Trash2 size={16} />
                   </Button>
@@ -473,11 +493,21 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
           </div>
         </form>
 
-        <div className="border-t p-6 flex justify-end gap-4">
-          <Button type="button" onClick={onClose} variant="outline">
+        <div className="border-t border-white/10 p-6 flex justify-end gap-4">
+          <Button 
+            type="button" 
+            onClick={onClose} 
+            variant="outline"
+            className="border-white/20 text-white hover:bg-white/10"
+          >
             Cancel
           </Button>
-          <Button type="submit" onClick={handleSubmit} disabled={isUploading}>
+          <Button 
+            type="submit" 
+            onClick={handleSubmit} 
+            disabled={isUploading}
+            className="bg-primary hover:bg-primary/90"
+          >
             {recipe ? "Update Recipe" : "Create Recipe"}
           </Button>
         </div>

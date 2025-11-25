@@ -80,7 +80,7 @@ const RecipeCatalog = () => {
         <div className="grid-4-cols">
           {popularRecipes.map((recipe, index) => (
             <RecipeCard
-              key={recipe._id || index}
+              key={'_id' in recipe && recipe._id ? recipe._id : `popular-${index}`}
               title={recipe.title}
               author={recipe.author}
               minutes={recipe.minutes}
@@ -102,7 +102,7 @@ const RecipeCatalog = () => {
           <div className="grid-4-cols pb-10">
             {quickRecipes.map((recipe, index) => (
               <SmallRecipeCard
-                key={recipe._id || index}
+                key={'_id' in recipe && recipe._id ? recipe._id : `quick-${index}`}
                 title={recipe.title}
                 author={recipe.author}
                 image={recipe.image || ''}

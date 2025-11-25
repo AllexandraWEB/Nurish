@@ -1,11 +1,12 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { ChevronLeft, ChevronRight, X, Edit, Trash2 } from "lucide-react";
 import React, { useRef, useState } from "react";
 import { useModalClose } from "@/hooks/useModalClose";
 import { Button } from "./ui/button";
 
 type Recipe = {
+  _id?: string;
   title: string;
   subtitle?: string;
   author: string;
@@ -25,12 +26,16 @@ type RecipeDetailsModalProps = {
   isOpen: boolean;
   onClose: () => void;
   recipe: Recipe | null;
+  onEdit?: () => void;
+  onDelete?: () => void;
 };
 
 const RecipeDetailsModal: React.FC<RecipeDetailsModalProps> = ({
   isOpen,
   onClose,
   recipe,
+  onEdit,
+  onDelete,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -58,7 +63,27 @@ const RecipeDetailsModal: React.FC<RecipeDetailsModalProps> = ({
           ref={modalRef}
           className="backdrop-blur-[32px] rounded-none md:rounded-lg w-full md:max-w-[1290px] h-full md:h-auto shadow-lg relative p-4 glass-border overflow-hidden"
         >
-          <div className="flex justify-end items-center relative z-10">
+          <div className="flex justify-between items-center relative z-10">
+            <div className="flex gap-2">
+              {onEdit && (
+                <button
+                  onClick={onEdit}
+                  className="p-2 hover:bg-white/10 rounded-full transition-colors"
+                  title="Edit Recipe"
+                >
+                  <Edit size={20} className="text-white" />
+                </button>
+              )}
+              {onDelete && (
+                <button
+                  onClick={onDelete}
+                  className="p-2 hover:bg-red-500/20 rounded-full transition-colors"
+                  title="Delete Recipe"
+                >
+                  <Trash2 size={20} className="text-red-400" />
+                </button>
+              )}
+            </div>
             <button onClick={onClose} className="text-dark-700 cursor-pointer">
               <X size={24} />
             </button>

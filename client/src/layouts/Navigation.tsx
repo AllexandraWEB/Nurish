@@ -29,10 +29,18 @@ const Navigation = () => {
 
   async function handleLogout() {
     try {
-      await apiFetch("/api/auth/logout", { method: "POST" });
-    } catch {}
-    localStorage.removeItem("user");
-    window.location.href = "/";
+      const token = localStorage.getItem("token");
+      if (token) {
+        await apiFetch("/api/auth/logout", { method: "POST" });
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      // Always clear both token and user
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      window.location.href = "/";
+    }
   }
 
   const links = user ? userNavLinks : guestNavLinks;

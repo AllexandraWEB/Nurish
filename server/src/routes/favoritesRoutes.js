@@ -1,13 +1,12 @@
-import express from "express";
-import * as favoritesController from "../controllers/favoritesController.js";
-import auth from "../middleware/auth.js";
+import express from 'express';
+import { addToFavorites, removeFromFavorites, getFavorites } from '../controllers/favoritesController.js';
+import { authenticateToken } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// All routes require authentication
-router.get("/", auth, favoritesController.getFavorites);
-router.post("/", auth, favoritesController.addFavorite);
-router.delete("/:recipeTitle", auth, favoritesController.removeFavorite);
-router.delete("/", auth, favoritesController.clearFavorites);
+// All favorites routes require authentication
+router.post('/add', authenticateToken, addToFavorites);
+router.post('/remove', authenticateToken, removeFromFavorites);
+router.get('/', authenticateToken, getFavorites);
 
 export default router;

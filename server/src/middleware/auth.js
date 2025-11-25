@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-export default function(req, res, next) {
+export const authenticateToken = (req, res, next) => {
   // Get token from Authorization header
   const authHeader = req.header('Authorization');
   const token = authHeader?.replace('Bearer ', '');
@@ -16,13 +16,22 @@ export default function(req, res, next) {
   try {
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    console.log('Auth middleware - User decoded:', decoded.id);
+    console.log('Auth middleware - Decoded token:', decoded);
+    
+    // Handle both old tokens (with 'id') and new tokens (with 'userId')
+    req.user = {
+      userId: decoded.userId || decoded.id,
+      email: decoded.email,
+    };
+    
+    console.log('Auth middleware - User set on request:', req.user);
     next();
   } catch (err) {
     console.error('Auth middleware - Token verification failed:', err.message);
     res.status(401).json({ message: 'Invalid token' });
   }
-}
+};
+
+export default authenticateToken;
 
 

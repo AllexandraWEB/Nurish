@@ -24,7 +24,7 @@ const FavoritesSection = () => {
     // Ensure imageDetails is available for the modal
     const recipeWithDetails = {
       ...recipe,
-      imageDetails: recipe.imageDetails || recipe.image,
+      imageDetails: recipe.imageDetails || recipe.image || "/images/default-recipe.jpg",
     };
     setSelectedRecipe(recipeWithDetails);
     setIsModalOpen(true);
@@ -62,12 +62,12 @@ const FavoritesSection = () => {
           <div className="grid-4-cols">
             {favorites.map((recipe, index) => (
               <RecipeCard
-                key={index}
+                key={recipe._id || index}
                 title={recipe.title}
                 author={recipe.author}
                 minutes={recipe.minutes}
-                image={recipe.image}
-                imageDetails={recipe.imageDetails || recipe.image}
+                image={recipe.image || "/images/default-recipe.jpg"}
+                imageDetails={recipe.imageDetails || recipe.image || "/images/default-recipe.jpg"}
                 recipe={recipe}
                 onClick={() => handleRecipeClick(recipe)}
               />

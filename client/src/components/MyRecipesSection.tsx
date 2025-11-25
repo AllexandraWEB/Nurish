@@ -10,11 +10,11 @@ type Recipe = {
   _id?: string;
   title: string;
   subtitle?: string;
-  author?: string;
-  authorName?: string;
-  minutes: string;
+  author: string;
+  authorId?: string;
+  minutes: number | string;
   image?: string;
-  imageDetails?: string;
+  imageDetails: string;
   servings?: string;
   prepTime?: string;
   cookTime?: string;
@@ -133,7 +133,9 @@ const MyRecipesSection = () => {
         </div>
 
         {isLoading ? (
-          <p className="text-center text-neutral-400">Loading recipes...</p>
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+          </div>
         ) : recipes.length === 0 ? (
           <div className="text-center py-20">
             <p className="text-neutral-400 mb-4">
@@ -147,17 +149,16 @@ const MyRecipesSection = () => {
         ) : (
           <div className="grid-4-cols">
             {recipes.map((recipe) => (
-              <div key={recipe._id}>
-                <RecipeCard
-                  title={recipe.title}
-                  author={recipe.authorName || "You"}
-                  minutes={recipe.minutes}
-                  image={recipe.image || "/images/default-recipe.jpg"}
-                  imageDetails={recipe.imageDetails || recipe.image || "/images/default-recipe.jpg"}
-                  recipe={recipe}
-                  onClick={() => handleRecipeClick(recipe)}
-                />
-              </div>
+              <RecipeCard
+                key={recipe._id}
+                title={recipe.title}
+                author={recipe.author}
+                minutes={recipe.minutes}
+                image={recipe.image || "/images/default-recipe.jpg"}
+                imageDetails={recipe.imageDetails || recipe.image || "/images/default-recipe.jpg"}
+                recipe={recipe}
+                onClick={() => handleRecipeClick(recipe)}
+              />
             ))}
           </div>
         )}
@@ -167,16 +168,16 @@ const MyRecipesSection = () => {
         isOpen={isFormOpen}
         onClose={handleCloseForm}
         onSubmit={editingRecipe ? handleUpdateRecipe : handleCreateRecipe}
-        recipe={editingRecipe as any}
+        recipe={editingRecipe}
       />
 
-      <RecipeDetailsModal {...({
-        isOpen: isDetailsModalOpen,
-        onClose: () => setIsDetailsModalOpen(false),
-        recipe: selectedRecipe as any,
-        onEdit: handleEditFromModal,
-        onDelete: handleDeleteFromModal,
-      } as any)} />
+      <RecipeDetailsModal
+        isOpen={isDetailsModalOpen}
+        onClose={() => setIsDetailsModalOpen(false)}
+        recipe={selectedRecipe}
+        onEdit={handleEditFromModal}
+        onDelete={handleDeleteFromModal}
+      />
     </div>
   );
 };

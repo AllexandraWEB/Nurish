@@ -1,146 +1,179 @@
-import User from "../models/User.js";
-
-// Get user's favorites
-export const getFavorites = async (req, res) => {
-  try {
-    console.log("Getting favorites for user:", req.user.id);
-    
-    const user = await User.findById(req.user.id).select("favorites");
-    
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    res.json({ favorites: user.favorites || [] });
-  } catch (error) {
-    console.error("Get favorites error:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
-  }
-};
+import User from '../models/User.js';
+import Recipe from '../models/Recipe.js';
+import mongoose from 'mongoose';
 
 // Add recipe to favorites
-export const addFavorite = async (req, res) => {
+export const addToFavorites = async (req, res) => {
   try {
-    console.log("Adding favorite for user:", req.user.id);
-    console.log("Recipe data:", req.body);
-    
+    console.log('Add to favorites - req.user:', req.user);
+    console.log('Adding favorite for user:', req.user?.userId);
+    console.log('Recipe data:', req.body);
+
+    if (!req.user?.userId) {
+      return res.status(401).json({ message: 'User not authenticated' });
+    }
+
     const { recipe } = req.body;
 
-    if (!recipe || !recipe.title) {
-      console.log("Invalid recipe data");
-      return res.status(400).json({ message: "Recipe data is required" });
+    // Find or create the recipe in the database
+    let existingRecipe = await Recipe.findOne({ title: recipe.title });
+
+    if (!existingRecipe) {
+      console.log('Recipe not found, creating new recipe...');
+      // Create new recipe if it doesn't exist
+      existingRecipe = new Recipe({
+        title: recipe.title,
+        subtitle: recipe.subtitle || '',
+        author: req.user.userId,
+        minutes: recipe.minutes?.toString() || '0',
+        image: recipe.image || '',
+        imageDetails: recipe.imageDetails || recipe.image || '',
+        servings: recipe.servings || '',
+        prepTime: recipe.prepTime || '',
+        cookTime: recipe.cookTime || '',
+        video: recipe.video || '',
+        ingredients: recipe.ingredients || [],
+        instructions: recipe.instructions || [],
+        recipeDetails: recipe.recipeDetails || [],
+      });
+      await existingRecipe.save();
+      console.log('New recipe created:', existingRecipe._id);
+    } else {
+      console.log('Recipe already exists:', existingRecipe._id);
     }
 
-    // Check if recipe is already in favorites
-    const user = await User.findById(req.user.id).select("favorites");
+    // Find user and update favorites using findByIdAndUpdate
+    const user = await User.findById(req.user.userId);
     
     if (!user) {
-      console.log("User not found:", req.user.id);
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: 'User not found' });
     }
 
-    const alreadyFavorited = user.favorites.some(
-      (fav) => fav.title === recipe.title
+    // Check if already in favorites
+    const alreadyFavorite = user.favorites.some(
+      fav => fav.toString() === existingRecipe._id.toString()
     );
 
-    if (alreadyFavorited) {
-      console.log("Recipe already favorited:", recipe.title);
-      return res.status(400).json({ message: "Recipe already in favorites" });
+    if (alreadyFavorite) {
+      return res.json({ 
+        message: 'Already in favorites', 
+        recipe: existingRecipe 
+      });
     }
 
-    // Add recipe to favorites using findByIdAndUpdate
-    const updatedUser = await User.findByIdAndUpdate(
-      req.user.id,
-      {
-        $push: {
-          favorites: {
-            title: recipe.title,
-            subtitle: recipe.subtitle || "",
-            author: recipe.author,
-            minutes: recipe.minutes,
-            image: recipe.image,
-            imageDetails: recipe.imageDetails || recipe.image,
-            servings: recipe.servings || "",
-            prepTime: recipe.prepTime || "",
-            cookTime: recipe.cookTime || "",
-            video: recipe.video || "",
-            recipeDetails: recipe.recipeDetails || [],
-            ingredients: recipe.ingredients || [],
-            instructions: recipe.instructions || [],
-            addedAt: new Date(),
-          },
-        },
-      },
-      { new: true, select: "favorites" }
+    // Add to favorites using updateOne to avoid validation issues
+    await User.updateOne(
+      { _id: req.user.userId },
+      { $push: { favorites: existingRecipe._id } }
     );
-    
-    console.log("Recipe added successfully:", recipe.title);
 
-    res.status(201).json({
-      message: "Recipe added to favorites",
-      favorites: updatedUser.favorites,
+    console.log('Recipe added to favorites successfully');
+
+    res.json({ 
+      message: 'Added to favorites', 
+      recipe: existingRecipe 
     });
   } catch (error) {
-    console.error("Add favorite error:", error);
-    console.error("Error stack:", error.stack);
-    res.status(500).json({ message: "Server error", error: error.message });
+    console.error('Error adding to favorites:', error);
+    res.status(500).json({ 
+      message: 'Failed to add to favorites',
+      error: error.message 
+    });
   }
 };
 
 // Remove recipe from favorites
-export const removeFavorite = async (req, res) => {
+export const removeFromFavorites = async (req, res) => {
   try {
-    const { recipeTitle } = req.params;
-    console.log("Removing favorite:", recipeTitle);
+    console.log('Remove from favorites - req.user:', req.user);
+    console.log('Removing favorite for user:', req.user?.userId);
 
-    if (!recipeTitle) {
-      return res.status(400).json({ message: "Recipe title is required" });
+    if (!req.user?.userId) {
+      return res.status(401).json({ message: 'User not authenticated' });
     }
 
-    const decodedTitle = decodeURIComponent(recipeTitle);
+    const { title } = req.body;
 
-    const updatedUser = await User.findByIdAndUpdate(
-      req.user.id,
-      {
-        $pull: {
-          favorites: { title: decodedTitle },
-        },
-      },
-      { new: true, select: "favorites" }
+    const recipe = await Recipe.findOne({ title });
+    if (!recipe) {
+      return res.status(404).json({ message: 'Recipe not found' });
+    }
+
+    // Remove from favorites using updateOne
+    await User.updateOne(
+      { _id: req.user.userId },
+      { $pull: { favorites: recipe._id } }
     );
-    
-    if (!updatedUser) {
-      return res.status(404).json({ message: "User not found" });
-    }
 
-    console.log("Recipe removed successfully");
+    console.log('Recipe removed from favorites successfully');
 
-    res.json({
-      message: "Recipe removed from favorites",
-      favorites: updatedUser.favorites,
-    });
+    res.json({ message: 'Removed from favorites' });
   } catch (error) {
-    console.error("Remove favorite error:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    console.error('Error removing from favorites:', error);
+    res.status(500).json({ 
+      message: 'Failed to remove from favorites',
+      error: error.message 
+    });
   }
 };
 
-// Clear all favorites
-export const clearFavorites = async (req, res) => {
+// Get user's favorites
+export const getFavorites = async (req, res) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(
-      req.user.id,
-      { $set: { favorites: [] } },
-      { new: true, select: "favorites" }
-    );
-    
-    if (!updatedUser) {
-      return res.status(404).json({ message: "User not found" });
+    console.log('Get favorites - req.user:', req.user);
+    console.log('Getting favorites for user:', req.user?.userId);
+
+    if (!req.user?.userId) {
+      return res.status(401).json({ message: 'User not authenticated' });
     }
 
-    res.json({ message: "All favorites cleared" });
+    const user = await User.findById(req.user.userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    console.log('User favorites before cleaning:', user.favorites);
+
+    // Filter out invalid ObjectIds (clean up corrupted data)
+    const validFavoriteIds = user.favorites.filter(id => {
+      const isValid = mongoose.Types.ObjectId.isValid(id);
+      if (!isValid) {
+        console.log('Invalid favorite ID found:', id);
+      }
+      return isValid;
+    });
+
+    console.log('Valid favorite IDs:', validFavoriteIds);
+
+    // Update user if we had to clean up invalid IDs
+    if (validFavoriteIds.length !== user.favorites.length) {
+      console.log('Cleaning up invalid favorite IDs...');
+      await User.updateOne(
+        { _id: req.user.userId },
+        { $set: { favorites: validFavoriteIds } }
+      );
+      console.log('Cleaned up invalid favorite IDs');
+    }
+
+    // Fetch the actual recipe documents
+    const favorites = await Recipe.find({ _id: { $in: validFavoriteIds } })
+      .populate('author', 'name');
+
+    console.log('Fetched favorites:', favorites.length);
+
+    const favoritesWithAuthor = favorites.map(recipe => ({
+      ...recipe.toObject(),
+      author: recipe.author?.name || 'Unknown',
+      authorId: recipe.author?._id,
+    }));
+
+    res.json(favoritesWithAuthor);
   } catch (error) {
-    console.error("Clear favorites error:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+    console.error('Error fetching favorites:', error);
+    res.status(500).json({ 
+      message: 'Failed to fetch favorites', 
+      error: error.message 
+    });
   }
 };

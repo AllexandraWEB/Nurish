@@ -1,56 +1,59 @@
 import express from 'express';
-import dotenv from 'dotenv';
 import cors from 'cors';
-import cookieParser from 'cookie-parser';
-import morgan from 'morgan';
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
 import authRoutes from './routes/authRoutes.js';
-import favoritesRoutes from './routes/favoritesRoutes.js';
 import recipeRoutes from './routes/recipeRoutes.js';
+import favoritesRoutes from './routes/favoritesRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
 
-dotenv.config();
+// Get __dirname equivalent in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB connected"))
-  .catch(err => console.log(err));
+// Load .env from the server root directory
+dotenv.config({ path: join(__dirname, '../.env') });
 
 const app = express();
 
-app.set('trust proxy', 1);
-
-const corsOptions = {
-  origin: [
-    'http://localhost:5173',
-    'https://nurish.vercel.app',
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-};
-
-app.use(cors(corsOptions));
-app.use(express.json({ limit: '50mb' })); // Increase limit for base64 images
+// Middleware
+app.use(cors());
+app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
-app.use(morgan('dev'));
-app.use(cookieParser());
 
+// MongoDB Connection
+const MONGO_URI = process.env.MONGO_URI;
+
+if (!MONGO_URI) {
+  console.error('MONGO_URI is not defined in environment variables');
+  process.exit(1);
+}
+
+mongoose.connect(MONGO_URI)
+  .then(() => console.log('Connected to MongoDB'))
+  .catch((err) => {
+    console.error('MongoDB connection error:', err);
+    process.exit(1);
+  });
+
+// Routes
 app.use('/api/auth', authRoutes);
-app.use('/api/favorites', favoritesRoutes);
 app.use('/api/recipes', recipeRoutes);
+app.use('/api/favorites', favoritesRoutes);
 app.use('/api/upload', uploadRoutes);
 
-app.get('/', (req, res) => {
-  res.send('Backend is running');
-});
-
-app.get('/health', (req, res) => {
+// Health check
+app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-const PORT = process.env.PORT || 5001;
-
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
 
