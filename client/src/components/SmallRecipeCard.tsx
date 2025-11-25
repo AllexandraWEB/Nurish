@@ -48,7 +48,7 @@ const SmallRecipeCard: React.FC<RecipeCardProps> = ({
     <div className="flex gap-4 justify-center">
       <div
         onClick={onClick}
-        className="relative w-[310px] h-[340px] rounded-2xl overflow-hidden cursor-pointer bg-center bg-cover glass-border 
+        className="relative w-[310px] h-[280px] rounded-2xl overflow-hidden cursor-pointer bg-center bg-cover glass-border 
         transform transition-transform duration-500 ease-out hover:scale-105 group"
         style={{
           backgroundImage: `url("${image}")`,
@@ -58,7 +58,7 @@ const SmallRecipeCard: React.FC<RecipeCardProps> = ({
         <div className="absolute inset-0 dark-gradient" />
 
         {/* Heart Icon */}
-        <div className="absolute top-4 right-4 z-10">
+        <div className="absolute top-4 right-4 z-10 flex gap-2">
           <button
             onClick={handleFavoriteClick}
             className={`transition-all duration-300 ${
@@ -66,7 +66,7 @@ const SmallRecipeCard: React.FC<RecipeCardProps> = ({
             }`}
           >
             <Heart
-              className={`w-6 h-6 transition-all duration-300 ${
+              className={`w-5 h-5 transition-all duration-300 ${
                 favorited
                   ? "fill-red-500 text-red-500"
                   : "text-white hover:text-red-300"
@@ -76,12 +76,8 @@ const SmallRecipeCard: React.FC<RecipeCardProps> = ({
         </div>
 
         {/* Bottom Content */}
-        <div
-          className="absolute bottom-0 left-0 w-full p-4 z-10 opacity-0 
-          translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 
-          transition-all duration-300 ease-out"
-        >
-          <h1 className="text-white text-2xl font-semibold">{title}</h1>
+        <div className="absolute bottom-0 left-0 w-full p-4 z-10">
+          <h1 className="text-white text-xl font-semibold">{title}</h1>
           <div className="flex justify-between text-gray-300 text-sm mt-1">
             <p>by {author}</p>
           </div>

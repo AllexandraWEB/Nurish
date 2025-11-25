@@ -58,8 +58,7 @@ const MyRecipeDetailsModal: React.FC<RecipeDetailsModalProps> = ({
           ref={modalRef}
           className="backdrop-blur-[32px] rounded-none md:rounded-lg w-full md:max-w-[1290px] h-full md:h-auto shadow-lg relative p-4 glass-border overflow-hidden"
         >
-          <div className="flex justify-between relative z-10">
-            <div>{}</div>
+          <div className="flex justify-end items-center relative z-10">
             <button onClick={onClose} className="text-dark-700 cursor-pointer">
               <X size={24} />
             </button>

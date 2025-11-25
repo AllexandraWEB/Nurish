@@ -8,7 +8,8 @@ import MyRecipesPage from "./pages/MyRecipesPage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { FavoritesProvider } from "./context/FavoritesContext";
 import PopularRecipesPage from "./pages/PopularRecipesPage";
-import RecipesPage from "./pages/recipesPage";
+import RecipesPage from "./pages/RecipesPage";
+
 
 function AppContent() {
   const location = useLocation();

@@ -52,7 +52,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
       <div
         onClick={onClick}
         className="relative w-[310px] h-[480px] rounded-2xl overflow-hidden cursor-pointer bg-center bg-cover glass-border 
-        transform transition-transform duration-500 ease-out hover:scale-105"
+        transform transition-transform duration-500 ease-out hover:scale-105 group"
         style={{
           backgroundImage: `url("${image}")`,
         }}
@@ -61,7 +61,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({
         <div className="absolute inset-0 dark-gradient" />
 
         {/* Heart Icon */}
-        <div className="absolute top-4 right-4 z-10">
+        <div className="absolute top-4 right-4 z-10 flex gap-2">
           <button
             onClick={handleFavoriteClick}
             className={`transition-all duration-300 ${

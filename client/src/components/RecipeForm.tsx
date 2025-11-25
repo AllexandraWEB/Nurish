@@ -395,7 +395,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
           {/* Ingredients */}
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-white">
+              <h3 className="text-lg font-semibold text-gray-900">
                 Ingredients
               </h3>
               <Button
@@ -432,7 +432,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
           {/* Instructions */}
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-white">
+              <h3 className="text-lg font-semibold text-gray-900">
                 Instructions
               </h3>
               <Button
@@ -473,7 +473,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
           </div>
         </form>
 
-        <div className="p-6 flex justify-end gap-4">
+        <div className="border-t p-6 flex justify-end gap-4">
           <Button type="button" onClick={onClose} variant="outline">
             Cancel
           </Button>
