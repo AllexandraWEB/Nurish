@@ -125,9 +125,12 @@ export const updateRecipe = async (req, res) => {
       return res.status(403).json({ message: 'Not authorized to update this recipe' });
     }
     
+    // Remove author and authorId from update data (these shouldn't change)
+    const { author, authorId, ...updateData } = req.body;
+    
     const updatedRecipe = await Recipe.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       { new: true, runValidators: true }
     ).populate('author', 'name');
     
