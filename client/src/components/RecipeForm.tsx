@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { X, Plus, Trash2, Image as ImageIcon } from "lucide-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { apiFetch } from "@/lib/api";
+import { useModalClose } from "@/hooks/useModalClose";
 
 type Recipe = {
   _id?: string;
@@ -32,24 +33,24 @@ type RecipeFormProps = {
 
 // Convert YouTube URL to embed format
 const convertToEmbedUrl = (url: string): string => {
-  if (!url) return '';
-  
-  if (url.includes('/embed/')) {
+  if (!url) return "";
+
+  if (url.includes("/embed/")) {
     return url;
   }
-  
+
   const watchMatch = url.match(/[?&]v=([^&]+)/);
   if (watchMatch) {
     const videoId = watchMatch[1];
     return `https://www.youtube.com/embed/${videoId}`;
   }
-  
+
   const shortMatch = url.match(/youtu\.be\/([^?]+)/);
   if (shortMatch) {
     const videoId = shortMatch[1];
     return `https://www.youtube.com/embed/${videoId}`;
   }
-  
+
   return url;
 };
 
@@ -74,8 +75,15 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
     ingredients: [""],
     instructions: [{ number: 1, text: "" }],
   });
+  const modalRef = useRef<HTMLDivElement>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [imagePreview, setImagePreview] = useState<string>("");
+
+  useModalClose({
+    modalRef,
+    onClose,
+    enableSwipe: false,
+  });
 
   useEffect(() => {
     if (recipe) {
@@ -119,13 +127,13 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (!file.type.startsWith('image/')) {
-      alert('Please select an image file');
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image file");
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      alert('Image size must be less than 5MB');
+      alert("Image size must be less than 5MB");
       return;
     }
 
@@ -137,9 +145,9 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
       reader.onloadend = async () => {
         try {
           const base64String = reader.result as string;
-          
-          const response = await apiFetch('/api/upload', {
-            method: 'POST',
+
+          const response = await apiFetch("/api/upload", {
+            method: "POST",
             body: JSON.stringify({ image: base64String }),
           });
 
@@ -151,24 +159,26 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
             }));
             setImagePreview(response.url);
           } else {
-            throw new Error('No URL returned from upload');
+            throw new Error("No URL returned from upload");
           }
         } catch (error: any) {
-          console.error('Upload error:', error);
-          alert('Failed to upload image: ' + (error?.message || 'Unknown error'));
+          console.error("Upload error:", error);
+          alert(
+            "Failed to upload image: " + (error?.message || "Unknown error")
+          );
         } finally {
           setIsUploading(false);
         }
       };
 
       reader.onerror = (error) => {
-        console.error('FileReader error:', error);
-        alert('Failed to read file');
+        console.error("FileReader error:", error);
+        alert("Failed to read file");
         setIsUploading(false);
       };
     } catch (error: any) {
-      console.error('Upload error:', error);
-      alert('Failed to upload image: ' + (error?.message || 'Unknown error'));
+      console.error("Upload error:", error);
+      alert("Failed to upload image: " + (error?.message || "Unknown error"));
       setIsUploading(false);
     }
   };
@@ -217,10 +227,10 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Get user info for author
     const user = JSON.parse(localStorage.getItem("user") || "{}");
-    
+
     const processedData: Recipe = {
       _id: recipe?._id,
       title: formData.title || "",
@@ -233,12 +243,12 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
       servings: formData.servings,
       prepTime: formData.prepTime,
       cookTime: formData.cookTime,
-      video: formData.video ? convertToEmbedUrl(formData.video) : '',
-      ingredients: formData.ingredients?.filter(i => i.trim() !== ''),
-      instructions: formData.instructions?.filter(i => i.text.trim() !== ''),
+      video: formData.video ? convertToEmbedUrl(formData.video) : "",
+      ingredients: formData.ingredients?.filter((i) => i.trim() !== ""),
+      instructions: formData.instructions?.filter((i) => i.text.trim() !== ""),
       recipeDetails: formData.recipeDetails,
     };
-    
+
     onSubmit(processedData);
   };
 
@@ -246,14 +256,17 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-blur-background overflow-hidden">
-      <div className="backdrop-blur-[32px] rounded-none md:rounded-lg w-full max-w-4xl h-[90vh] shadow-lg relative overflow-hidden flex flex-col glass-border">
+      <div
+        ref={modalRef}
+        className="backdrop-blur-[32px] rounded-none md:rounded-lg w-full md:max-w-[1290px] h-full md:h-[90vh] shadow-lg relative overflow-hidden flex flex-col glass-border"
+      >
         <div className="flex justify-between items-center p-6 border-b border-white/10">
           <h2 className="text-2xl font-semibold text-white">
             {recipe ? "Edit Recipe" : "Add New Recipe"}
           </h2>
           <button
             onClick={onClose}
-            className="text-gray-300 hover:text-white"
+            className="text-gray-300 hover:text-white cursor-pointer"
           >
             <X size={24} />
           </button>
@@ -261,12 +274,12 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
 
         <form
           onSubmit={handleSubmit}
-          className="flex-1 overflow-y-auto p-6 space-y-6"
+          className="flex-1 overflow-y-auto p-6 space-y-6 no-scrollbar"
         >
           {/* Image Upload */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold text-white">Recipe Image</h3>
-            
+
             <div className="flex flex-col items-center gap-4">
               {imagePreview ? (
                 <div className="relative w-full h-64 rounded-lg overflow-hidden">
@@ -279,7 +292,11 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
                     type="button"
                     onClick={() => {
                       setImagePreview("");
-                      setFormData((prev) => ({ ...prev, image: "", imageDetails: "" }));
+                      setFormData((prev) => ({
+                        ...prev,
+                        image: "",
+                        imageDetails: "",
+                      }));
                     }}
                     className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600"
                   >
@@ -304,7 +321,9 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
                     <>
                       <ImageIcon size={48} className="text-gray-400 mb-4" />
                       <p className="text-gray-300">Click to upload image</p>
-                      <p className="text-sm text-gray-400 mt-2">PNG, JPG up to 5MB</p>
+                      <p className="text-sm text-gray-400 mt-2">
+                        PNG, JPG up to 5MB
+                      </p>
                     </>
                   )}
                 </label>
@@ -318,7 +337,9 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
               Basic Information
             </h3>
             <div>
-              <Label htmlFor="title" className="text-white">Recipe Title *</Label>
+              <Label htmlFor="title" className="text-white">
+                Recipe Title *
+              </Label>
               <Input
                 id="title"
                 name="title"
@@ -330,7 +351,9 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
             </div>
 
             <div>
-              <Label htmlFor="subtitle" className="text-white">Subtitle</Label>
+              <Label htmlFor="subtitle" className="text-white">
+                Subtitle
+              </Label>
               <Input
                 id="subtitle"
                 name="subtitle"
@@ -342,7 +365,9 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="minutes" className="text-white">Cooking Time (minutes) *</Label>
+                <Label htmlFor="minutes" className="text-white">
+                  Cooking Time (minutes) *
+                </Label>
                 <Input
                   id="minutes"
                   name="minutes"
@@ -353,7 +378,9 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
                 />
               </div>
               <div>
-                <Label htmlFor="servings" className="text-white">Servings</Label>
+                <Label htmlFor="servings" className="text-white">
+                  Servings
+                </Label>
                 <Input
                   id="servings"
                   name="servings"
@@ -366,7 +393,9 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <Label htmlFor="prepTime" className="text-white">Prep Time</Label>
+                <Label htmlFor="prepTime" className="text-white">
+                  Prep Time
+                </Label>
                 <Input
                   id="prepTime"
                   name="prepTime"
@@ -376,7 +405,9 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
                 />
               </div>
               <div>
-                <Label htmlFor="cookTime" className="text-white">Cook Time</Label>
+                <Label htmlFor="cookTime" className="text-white">
+                  Cook Time
+                </Label>
                 <Input
                   id="cookTime"
                   name="cookTime"
@@ -388,7 +419,9 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
             </div>
 
             <div>
-              <Label htmlFor="video" className="text-white">Video URL (YouTube)</Label>
+              <Label htmlFor="video" className="text-white">
+                Video URL (YouTube)
+              </Label>
               <Input
                 id="video"
                 name="video"
@@ -402,7 +435,8 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
                 className="mt-1 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
               />
               <p className="text-xs text-gray-400 mt-1">
-                Paste any YouTube URL - it will be automatically converted to embed format
+                Paste any YouTube URL - it will be automatically converted to
+                embed format
               </p>
             </div>
           </div>
@@ -410,15 +444,13 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
           {/* Ingredients */}
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-white">
-                Ingredients
-              </h3>
+              <h3 className="text-lg font-semibold text-white">Ingredients</h3>
               <Button
                 type="button"
                 onClick={addIngredient}
-                size="sm"
+                size="lg"
                 variant="outline"
-                className="border-white/20 text-white hover:bg-white/10"
+                className="glass-border-button"
               >
                 <Plus size={16} className="mr-1" />
                 Add Ingredient
@@ -428,7 +460,9 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
               <div key={index} className="flex gap-2">
                 <Input
                   value={ingredient}
-                  onChange={(e) => handleIngredientChange(index, e.target.value)}
+                  onChange={(e) =>
+                    handleIngredientChange(index, e.target.value)
+                  }
                   placeholder={`Ingredient ${index + 1}`}
                   className="bg-white/10 border-white/20 text-white placeholder:text-gray-400"
                 />
@@ -437,8 +471,8 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
                     type="button"
                     onClick={() => removeIngredient(index)}
                     size="sm"
-                    variant="outline"
-                    className="border-white/20 text-white hover:bg-red-500/20"
+                    variant="default"
+                    className="hover:bg-red-500/20"
                   >
                     <Trash2 size={16} />
                   </Button>
@@ -450,15 +484,13 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
           {/* Instructions */}
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-white">
-                Instructions
-              </h3>
+              <h3 className="text-lg font-semibold text-white">Instructions</h3>
               <Button
                 type="button"
                 onClick={addInstruction}
-                size="sm"
+                size="lg"
                 variant="outline"
-                className="border-white/20 text-white hover:bg-white/10"
+                className="glass-border-button"
               >
                 <Plus size={16} className="mr-1" />
                 Add Step
@@ -482,8 +514,8 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
                     type="button"
                     onClick={() => removeInstruction(index)}
                     size="sm"
-                    variant="outline"
-                    className="border-white/20 text-white hover:bg-red-500/20"
+                    variant="default"
+                    className="hover:bg-red-500/20"
                   >
                     <Trash2 size={16} />
                   </Button>
@@ -494,19 +526,22 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
         </form>
 
         <div className="border-t border-white/10 p-6 flex justify-end gap-4">
-          <Button 
-            type="button" 
-            onClick={onClose} 
-            variant="outline"
-            className="border-white/20 text-white hover:bg-white/10"
+          <Button
+            type="button"
+            onClick={onClose}
+            variant="default"
+            size="lg"
+            className="bg-primary hover:bg-primary/90"
           >
             Cancel
           </Button>
-          <Button 
-            type="submit" 
-            onClick={handleSubmit} 
+          <Button
+            type="submit"
+            onClick={handleSubmit}
             disabled={isUploading}
-            className="bg-primary hover:bg-primary/90"
+            variant="outline"
+            size="lg"
+            className="glass-border-button"
           >
             {recipe ? "Update Recipe" : "Create Recipe"}
           </Button>

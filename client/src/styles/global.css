@@ -204,3 +204,48 @@
     }
   }
 }
+
+/* A glassy white border mask */
+.glass-border-button {
+  position: relative;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background-clip: padding-box;
+
+  /* Gradient border simulation */
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0.49),
+      rgba(255, 255, 255, 0.2)
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+
+    @media (max-width: 768px) {
+      border: 0;
+
+      &::before {
+        display: none;
+      }
+    }
+  }
+}
+
+/* No Scrollbar */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
