@@ -3,6 +3,7 @@ import RecipeForm from "../shared/RecipeForm";
 import { useState, useEffect } from "react";
 import { apiFetch } from "@/lib/api";
 import RecipeDetailsModal from "../shared/RecipeDetailsModal";
+import { useParams, useNavigate } from "react-router-dom";
 
 type Recipe = {
   _id?: string;
@@ -23,6 +24,9 @@ type Recipe = {
 };
 
 const RecipesSection = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -33,21 +37,35 @@ const RecipesSection = () => {
     fetchAllRecipes();
   }, []);
 
+  useEffect(() => {
+    if (id && allRecipes.length > 0) {
+      const recipe = allRecipes.find((r) => r._id === id);
+      if (recipe) {
+        setSelectedRecipe(recipe);
+        setIsModalOpen(true);
+      }
+    }
+  }, [id, allRecipes]);
+
   const fetchAllRecipes = async () => {
     try {
       setLoading(true);
-      const recipes = await apiFetch('/api/recipes');
+      const recipes = await apiFetch("/api/recipes");
       setAllRecipes(recipes);
     } catch (error) {
-      console.error('Failed to fetch recipes:', error);
+      console.error("Failed to fetch recipes:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const handleRecipeClick = (recipe: Recipe) => {
-    setSelectedRecipe(recipe);
-    setIsModalOpen(true);
+    navigate(`/recipes/${recipe._id}`);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    navigate("/recipes");
   };
 
   const handleAddPublicRecipe = () => {
@@ -100,12 +118,10 @@ const RecipesSection = () => {
             + Add Recipe
           </button>
         </div>
-        
+
         {allRecipes.length === 0 ? (
           <div className="text-center py-20">
-            <p className="text-gray-400 text-xl mb-4">
-              No community recipes yet.
-            </p>
+            <p className="text-gray-400 text-xl mb-4">No community recipes yet.</p>
             <p className="text-gray-500 mb-6">
               Be the first to share a recipe with the community!
             </p>
@@ -124,8 +140,8 @@ const RecipesSection = () => {
                 title={recipe.title}
                 author={recipe.author}
                 minutes={recipe.minutes}
-                image={recipe.image || '/images/default-recipe.jpg'}
-                imageDetails={recipe.imageDetails || '/images/default-recipe.jpg'}
+                image={recipe.image || "/images/default-recipe.jpg"}
+                imageDetails={recipe.imageDetails || "/images/default-recipe.jpg"}
                 recipe={recipe}
                 onClick={() => handleRecipeClick(recipe)}
               />
@@ -136,7 +152,7 @@ const RecipesSection = () => {
 
       <RecipeDetailsModal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={handleCloseModal}
         recipe={selectedRecipe}
       />
 

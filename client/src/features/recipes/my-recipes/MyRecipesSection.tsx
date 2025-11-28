@@ -6,7 +6,6 @@ import { apiFetch } from "@/lib/api";
 import RecipeDetailsModal from "../shared/RecipeDetailsModal";
 import RecipeForm from "../shared/RecipeForm";
 
-
 type Recipe = {
   _id?: string;
   title: string;

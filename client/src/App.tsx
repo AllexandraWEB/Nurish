@@ -1,14 +1,14 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
-import Navigation from "./layouts/Navigation";
-import HeroSection from "./features/home/HeroSection";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
-import FavoritesPage from "./pages/FavoritesPage";
-import MyRecipesPage from "./pages/MyRecipesPage";
-import ProtectedRoute from "./layouts/ProtectedRoute";
-import { FavoritesProvider } from "./context/FavoritesContext";
-import PopularRecipesPage from "./pages/PopularRecipesPage";
-import RecipesPage from "./pages/RecipesPage";
+import Navigation from "@/layouts/Navigation";
+import HeroSection from "@/features/home/HeroSection";
+import RecipesPage from "@/pages/RecipesPage";
+import PopularRecipesPage from "@/pages/PopularRecipesPage";
+import MyRecipesPage from "@/pages/MyRecipesPage";
+import FavoritesPage from "@/pages/FavoritesPage";
+import LoginPage from "@/pages/LoginPage";
+import RegisterPage from "@/pages/RegisterPage";
+import ProtectedRoute from "@/layouts/ProtectedRoute";
+import { FavoritesProvider } from "@/context/FavoritesContext";
 
 
 function AppContent() {
@@ -21,10 +21,26 @@ function AppContent() {
         {!isAuthPage && <Navigation />}
         <Routes>
           <Route path="/" element={<HeroSection />} />
-          <Route path="/popular-recipes" element={<PopularRecipesPage />} />
           <Route path="/recipes" element={<RecipesPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/recipes/:id" element={<RecipesPage />} />
+          <Route path="/popular-recipes" element={<PopularRecipesPage />} />
+          <Route path="/popular-recipes/:id" element={<PopularRecipesPage />} />
+          <Route
+            path="/my-recipes"
+            element={
+              <ProtectedRoute>
+                <MyRecipesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-recipes/:id"
+            element={
+              <ProtectedRoute>
+                <MyRecipesPage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/favorites"
             element={
@@ -34,13 +50,15 @@ function AppContent() {
             }
           />
           <Route
-            path="/my-recipes"
+            path="/favorites/:id"
             element={
               <ProtectedRoute>
-                <MyRecipesPage />
+                <FavoritesPage />
               </ProtectedRoute>
             }
           />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
         </Routes>
       </div>
     </FavoritesProvider>

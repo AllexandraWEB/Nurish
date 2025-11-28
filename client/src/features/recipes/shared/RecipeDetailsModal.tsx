@@ -159,7 +159,7 @@ const RecipeDetailsModal: React.FC<RecipeDetailsModalProps> = ({
                   )}
                 </div>
 
-                <div className="relative md:absolute md:top-0 md:right-20 w-full md:w-1/2 flex-1 md:flex-none md:h-full mt-0">
+                <div className="relative md:absolute md:top-0 md:right-20 w-full md:w-1/2 flex-1 md:flex-none md:h-full mt-0 max-w-[660px] max-h-[660px]">
                   <img
                     src={recipe.imageDetails}
                     className="hidden md:block w-full h-full object-cover rounded-lg md:rounded-r-lg"
