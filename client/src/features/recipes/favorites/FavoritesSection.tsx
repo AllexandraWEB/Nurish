@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { useFavorites } from "@/context/FavoritesContext";
-import RecipeCard from "@/components/RecipeCard";
-import RecipeDetailsModal from "@/components/RecipeDetailsModal";
-import Container from "@/components/Container";
+import RecipeCard from "@/features/recipes/shared/RecipeCard";
+import Container from "@/layouts/Container";
 import { useNavigate } from "react-router-dom";
+import RecipeDetailsModal from "../shared/RecipeDetailsModal";
 
 const FavoritesSection = () => {
   const { favorites, loading } = useFavorites();

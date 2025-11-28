@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { X, Plus, Trash2, Image as ImageIcon } from "lucide-react";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
+import { Button } from "@/ui/button";
+import { Input } from "@/ui/input";
 import { apiFetch } from "@/lib/api";
 import { useModalClose } from "@/hooks/useModalClose";
+import { Label } from "@/ui/label";
 
 type Recipe = {
   _id?: string;

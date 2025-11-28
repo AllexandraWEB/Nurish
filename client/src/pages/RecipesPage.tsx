@@ -1,4 +1,4 @@
-import RecipesSection from "@/components/RecipesSection";
+import RecipesSection from "@/features/recipes/community/RecipesSection";
 
 export default function RecipesPage() {
   return (

@@ -1,11 +1,11 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Navigation from "./layouts/Navigation";
-import HeroSection from "./components/HeroSection";
+import HeroSection from "./features/home/HeroSection";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import FavoritesPage from "./pages/FavoritesPage";
 import MyRecipesPage from "./pages/MyRecipesPage";
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./layouts/ProtectedRoute";
 import { FavoritesProvider } from "./context/FavoritesContext";
 import PopularRecipesPage from "./pages/PopularRecipesPage";
 import RecipesPage from "./pages/RecipesPage";

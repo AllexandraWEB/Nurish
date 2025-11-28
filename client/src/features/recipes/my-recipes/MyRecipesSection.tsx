@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import RecipeForm from "@/components/RecipeForm";
-import RecipeCard from "@/components/RecipeCard";
-import RecipeDetailsModal from "@/components/RecipeDetailsModal";
+import { Button } from "@/ui/button";
+import RecipeCard from "@/features/recipes/shared/RecipeCard";
 import { apiFetch } from "@/lib/api";
+import RecipeDetailsModal from "../shared/RecipeDetailsModal";
+import RecipeForm from "../shared/RecipeForm";
+
 
 type Recipe = {
   _id?: string;

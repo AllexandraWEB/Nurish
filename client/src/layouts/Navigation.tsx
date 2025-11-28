@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from "@/ui/button";
 import { guestNavLinks, userNavLinks } from "@/constants";
 import { Leaf, Plus, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";

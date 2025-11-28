@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import { Button } from "../ui/button";
-import Separator from "../Separator";
+import { Button } from "@/ui/button";
+import Separator from "@/ui/SeparatorTemplate";
 import { useState } from "react";
 import { apiFetch } from "@/lib/api";
 

@@ -1,8 +1,8 @@
-import RecipeCard from "@/components/RecipeCard";
-import RecipeDetailsModal from "@/components/RecipeDetailsModal";
-import RecipeForm from "@/components/RecipeForm";
+import RecipeCard from "@/features/recipes/shared/RecipeCard";
+import RecipeForm from "../shared/RecipeForm";
 import { useState, useEffect } from "react";
 import { apiFetch } from "@/lib/api";
+import RecipeDetailsModal from "../shared/RecipeDetailsModal";
 
 type Recipe = {
   _id?: string;

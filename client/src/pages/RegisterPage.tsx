@@ -1,4 +1,4 @@
-import RegisterLayout from "@/components/auth/RegisterLayout";
+import RegisterLayout from "@/features/authenication/components/RegisterLayout";
 
 export default function RegisterPage() {
   return (

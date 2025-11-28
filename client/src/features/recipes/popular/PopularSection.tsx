@@ -1,9 +1,9 @@
-import Categories from "@/components/Categories";
-import RecipeCard from "@/components/RecipeCard";
-import SmallRecipeCard from "@/components/SmallRecipeCard";
-import RecipeDetailsModal from "@/components/RecipeDetailsModal";
+import Categories from "@/features/home/Categories";
+import RecipeCard from "@/features/recipes/shared/RecipeCard";
+import SmallRecipeCard from "@/features/recipes/shared/SmallRecipeCard";
 import { fastRecipes, RECIPES } from "@/constants";
 import { useState } from "react";
+import RecipeDetailsModal from "../shared/RecipeDetailsModal";
 
 const PopularSection = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

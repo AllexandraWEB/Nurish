@@ -1,11 +1,11 @@
 import { Routes, Route, useLocation } from "react-router-dom";
-import HeroSection from "./components/HeroSection";
+import HeroSection from "./features/home/HeroSection";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import Navigation from "./layouts/Navigation";
 import MyRecipesPage from "@/pages/MyRecipesPage";
-import ProtectedRoute from "./components/ProtectedRoute";
-import RecipeCatalog from "./components/RecipeCatalog";
+import ProtectedRoute from "./layouts/ProtectedRoute";
+import RecipeCatalog from "./features/recipes/popular/RecipeCatalog";
 
 export default function AppRoutes() {
   const location = useLocation();

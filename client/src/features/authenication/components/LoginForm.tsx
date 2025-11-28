@@ -1,9 +1,9 @@
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import { Button } from "../ui/button";
-import Separator from "../Separator";
 import { useState } from "react";
 import { apiFetch } from "@/lib/api";
+import Separator from "@/ui/SeparatorTemplate";
+import { Button } from "@/ui/button";
 
 const LoginForm = () => {
   const [email, setEmail] = useState("");
