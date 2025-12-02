@@ -5,24 +5,8 @@ import { Input } from "@/ui/input";
 import { apiFetch } from "@/lib/api";
 import { useModalClose } from "@/hooks/useModalClose";
 import { Label } from "@/ui/label";
-
-type Recipe = {
-  _id?: string;
-  title: string;
-  subtitle?: string;
-  author: string;
-  authorId?: string;
-  minutes: number | string;
-  image?: string;
-  imageDetails: string;
-  servings?: string;
-  prepTime?: string;
-  cookTime?: string;
-  video?: string;
-  ingredients?: string[];
-  instructions?: { number: number; text: string }[];
-  recipeDetails?: string[];
-};
+import { Recipe } from "@/types/recipe";
+import { RECIPE_CATEGORIES } from "@/constants";
 
 type RecipeFormProps = {
   isOpen: boolean;
@@ -71,7 +55,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
     prepTime: "",
     cookTime: "",
     video: "",
-    recipeDetails: [],
+    category: "", // Add category field
     ingredients: [""],
     instructions: [{ number: 1, text: "" }],
   });
@@ -108,7 +92,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
         prepTime: "",
         cookTime: "",
         video: "",
-        recipeDetails: [],
+        category: "",
         ingredients: [""],
         instructions: [{ number: 1, text: "" }],
       });
@@ -118,6 +102,13 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (
+    e: React.ChangeEvent<HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -244,6 +235,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
       prepTime: formData.prepTime,
       cookTime: formData.cookTime,
       video: formData.video ? convertToEmbedUrl(formData.video) : "",
+      category: formData.category,
       ingredients: formData.ingredients?.filter((i) => i.trim() !== ""),
       instructions: formData.instructions?.filter((i) => i.text.trim() !== ""),
       recipeDetails: formData.recipeDetails,
@@ -363,14 +355,65 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
               />
             </div>
 
+            {/* Category Selection */}
+            <div>
+              <Label htmlFor="category" className="text-white">
+                Category *
+              </Label>
+              <select
+                id="category"
+                name="category"
+                value={formData.category}
+                onChange={handleSelectChange}
+                required
+                className="mt-1 w-full px-3 py-3.5 bg-white/10 border border-white/20 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-white/50"
+              >
+                <option value="" className="bg-neutral-900">Select a category</option>
+                {RECIPE_CATEGORIES.map((cat) => (
+                  <option key={cat.id} value={cat.id} className="bg-neutral-900">
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="prepTime" className="text-white">
+                  Prep Time *
+                </Label>
+                <Input
+                  id="prepTime"
+                  name="prepTime"
+                  value={formData.prepTime}
+                  onChange={handleInputChange}
+                  required
+                  className="mt-1 bg-white/10 border-white/20 text-white"
+                />
+              </div>
+              <div>
+                <Label htmlFor="cookTime" className="text-white">
+                  Cook Time
+                </Label>
+                <Input
+                  id="cookTime"
+                  name="cookTime"
+                  value={formData.cookTime}
+                  onChange={handleInputChange}
+                  className="mt-1 bg-white/10 border-white/20 text-white"
+                />
+              </div>
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <Label htmlFor="minutes" className="text-white">
-                  Cooking Time (minutes) *
+                  Total Minutes *
                 </Label>
                 <Input
                   id="minutes"
                   name="minutes"
+                  type="number"
                   value={formData.minutes}
                   onChange={handleInputChange}
                   required
@@ -391,36 +434,35 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="prepTime" className="text-white">
-                  Prep Time
-                </Label>
-                <Input
-                  id="prepTime"
-                  name="prepTime"
-                  value={formData.prepTime}
-                  onChange={handleInputChange}
-                  className="mt-1 bg-white/10 border-white/20 text-white"
-                />
-              </div>
-              <div>
-                <Label htmlFor="cookTime" className="text-white">
-                  Cook Time
-                </Label>
-                <Input
-                  id="cookTime"
-                  name="cookTime"
-                  value={formData.cookTime}
-                  onChange={handleInputChange}
-                  className="mt-1 bg-white/10 border-white/20 text-white"
-                />
-              </div>
+            <div>
+              <Label htmlFor="image" className="text-white">
+                Image URL
+              </Label>
+              <Input
+                id="image"
+                name="image"
+                value={formData.image}
+                onChange={handleInputChange}
+                className="mt-1 bg-white/10 border-white/20 text-white"
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="imageDetails" className="text-white">
+                Detail Image URL
+              </Label>
+              <Input
+                id="imageDetails"
+                name="imageDetails"
+                value={formData.imageDetails}
+                onChange={handleInputChange}
+                className="mt-1 bg-white/10 border-white/20 text-white"
+              />
             </div>
 
             <div>
               <Label htmlFor="video" className="text-white">
-                Video URL (YouTube)
+                Video URL (YouTube embed)
               </Label>
               <Input
                 id="video"

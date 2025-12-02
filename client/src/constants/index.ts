@@ -3,11 +3,13 @@ import { Beef, Fish, Leaf, Soup, Utensils } from "lucide-react";
 export const guestNavLinks = [
   { name: "Popular Recipes", href: "/popular-recipes" },
   { name: "Recipes", href: "/recipes" },
+  { name: "Categories", href: "/categories" },
 ];
 
 export const userNavLinks = [
   { name: "Popular Recipes", href: "/popular-recipes" },
   { name: "Recipes", href: "/recipes" },
+  { name: "Categories", href: "/categories/breakfast" },
   { name: "Favorites", href: "/favorites" },
   { name: "My Recipes", href: "/my-recipes" },
 ];
@@ -432,4 +434,27 @@ export const fastRecipes = [
       },
     ],
   },
+];
+
+export const RECIPE_CATEGORIES = [
+  { id: "breakfast", name: "Breakfast", image: "/category-images/category-breakfast.jpeg" },
+  { id: "lunch", name: "Lunch", image: "/category-images/category-lunch.jpeg" },
+  { id: "dinner", name: "Dinner", image: "/category-images/category-dinner.jpeg" },
+  { id: "desserts", name: "Desserts", image: "/category-images/category-desserts.jpeg" },
+  { id: "snacks", name: "Snacks", image: "/category-images/category-snacks.jpeg" },
+  { id: "drinks", name: "Drinks", image: "/category-images/category-drinks.jpeg" },
+  { id: "vegan", name: "Vegan", image: "/category-images/category-vegan.jpeg" },
+  { id: "healthy", name: "Healthy", image: "/category-images/category-healthy.jpeg" },
+  { id: "salads", name: "Salads", image: "/category-images/category-salads.jpeg" },
+  { id: "soups", name: "Soups", image: "/category-images/category-soups.jpeg" },
+  { id: "pasta", name: "Pasta", image: "/category-images/category-pasta.jpeg" },
+  { id: "seafood", name: "Seafood", image: "/category-images/category-seafood.jpeg" },
+  {
+    id: "grilling",
+    name: "Grilling & BBQ",
+    image: "/category-images/category-grilling.jpeg",
+  },
+  { id: "baking", name: "Baking", image: "/category-images/category-baking.jpeg" },
+  { id: "asian", name: "Asian Cuisine", image: "/category-images/category-asian.jpeg" },
+  { id: "italian", name: "Italian", image: "/category-images/category-italian.jpeg" },
 ];

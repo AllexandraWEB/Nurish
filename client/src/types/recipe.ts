@@ -15,9 +15,10 @@ export type Recipe = {
   instructions?: { number: number; text: string }[];
   recipeDetails?: string[];
   isPublic?: boolean;
+  category?: string;
 };
 
-export type RecipeFormData = Omit<Recipe, '_id'>;
+export type RecipeFormData = Omit<Recipe, "_id">;
 
 export type RecipeCardProps = {
   title: string;
