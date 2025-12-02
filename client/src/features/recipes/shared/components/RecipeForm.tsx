@@ -6,11 +6,11 @@ import { useModalClose } from "@/hooks/useModalClose";
 import { Label } from "@/ui/label";
 import { Recipe } from "@/types/recipe";
 import { RECIPE_CATEGORIES } from "@/constants";
-import { useRecipeFormData } from "./hooks/useRecipeFormData";
-import { useImageUpload } from "./hooks/useImageUpload";
-import { useRecipeIngredients } from "./hooks/useRecipeIngredients";
-import { useRecipeInstructions } from "./hooks/useRecipeInstructions";
-import { useVideoUrlConverter } from "./hooks/useVideoUrlConverter";
+import { useRecipeFormData } from "../hooks/useRecipeFormData";
+import { useImageUpload } from "../hooks/useImageUpload";
+import { useRecipeIngredients } from "../hooks/useRecipeIngredients";
+import { useRecipeInstructions } from "../hooks/useRecipeInstructions";
+import { useVideoUrlConverter } from "../hooks/useVideoUrlConverter";
 
 type RecipeFormProps = {
   isOpen: boolean;

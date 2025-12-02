@@ -1,10 +1,10 @@
 import Categories from "@/features/home/Categories";
-import RecipeCard from "@/features/recipes/shared/RecipeCard";
-import SmallRecipeCard from "@/features/recipes/shared/SmallRecipeCard";
-import RecipeDetailsModal from "../shared/RecipeDetailsModal";
+import RecipeCard from "@/features/recipes/shared/components/RecipeCard";
+import SmallRecipeCard from "@/features/recipes/shared/components/SmallRecipeCard";
 import { fastRecipes, RECIPES } from "@/constants";
 import { useState, useEffect } from "react";
 import { apiFetch } from "@/lib/api";
+import RecipeDetailsModal from "../../shared/components/RecipeDetailsModal";
 
 type Recipe = {
   _id?: string;

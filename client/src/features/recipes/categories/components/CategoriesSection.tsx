@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import RecipeCard from '@/features/recipes/shared/RecipeCard';
-import RecipeDetailsModal from '@/features/recipes/shared/RecipeDetailsModal';
+import RecipeCard from '@/features/recipes/shared/components/RecipeCard';
+import RecipeDetailsModal from '@/features/recipes/shared/components/RecipeDetailsModal';
 import Container from '@/layouts/Container';
 import { apiFetch } from '@/lib/api';
 import { Recipe } from '@/types/recipe';

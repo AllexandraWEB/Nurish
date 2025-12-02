@@ -1,4 +1,4 @@
-import PopularSection from "@/features/recipes/popular/PopularSection";
+import PopularSection from "@/features/recipes/popular/components/PopularSection";
 
 export default function PopularRecipesPage() {
   return (

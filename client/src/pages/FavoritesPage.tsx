@@ -1,4 +1,4 @@
-import FavoritesSection from "@/features/recipes/favorites/FavoritesSection";
+import FavoritesSection from "@/features/recipes/favorites/components/FavoritesSection";
 
 export default function FavoritesPage() {
   return (

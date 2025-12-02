@@ -1,9 +1,9 @@
 import { Plus } from "lucide-react";
 import { Button } from "@/ui/button";
-import RecipeCard from "@/features/recipes/shared/RecipeCard";
-import RecipeDetailsModal from "../shared/RecipeDetailsModal";
-import RecipeForm from "../shared/RecipeForm";
-import { useMyRecipes } from "./hooks/useMyRecipes";
+import RecipeCard from "@/features/recipes/shared/components/RecipeCard";
+import RecipeDetailsModal from "../../shared/components/RecipeDetailsModal";
+import RecipeForm from "../../shared/components/RecipeForm";
+import { useMyRecipes } from "../hooks/useMyRecipes";
 
 const MyRecipesSection = () => {
   const {

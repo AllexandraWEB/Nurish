@@ -1,7 +1,7 @@
-import RecipeCard from "@/features/recipes/shared/RecipeCard";
-import RecipeForm from "../shared/RecipeForm";
-import RecipeDetailsModal from "../shared/RecipeDetailsModal";
-import { useCommunityRecipes } from "./hooks/useCommunityRecipes";
+import RecipeCard from "@/features/recipes/shared/components/RecipeCard";
+import RecipeForm from "../../shared/components/RecipeForm";
+import RecipeDetailsModal from "../../shared/components/RecipeDetailsModal";
+import { useCommunityRecipes } from "../hooks/useCommunityRecipes";
 
 const RecipesSection = () => {
   const {
