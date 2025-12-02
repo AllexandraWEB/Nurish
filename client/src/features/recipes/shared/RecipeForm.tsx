@@ -1,12 +1,16 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import { X, Plus, Trash2, Image as ImageIcon } from "lucide-react";
 import { Button } from "@/ui/button";
 import { Input } from "@/ui/input";
-import { apiFetch } from "@/lib/api";
 import { useModalClose } from "@/hooks/useModalClose";
 import { Label } from "@/ui/label";
 import { Recipe } from "@/types/recipe";
 import { RECIPE_CATEGORIES } from "@/constants";
+import { useRecipeFormData } from "./hooks/useRecipeFormData";
+import { useImageUpload } from "./hooks/useImageUpload";
+import { useRecipeIngredients } from "./hooks/useRecipeIngredients";
+import { useRecipeInstructions } from "./hooks/useRecipeInstructions";
+import { useVideoUrlConverter } from "./hooks/useVideoUrlConverter";
 
 type RecipeFormProps = {
   isOpen: boolean;
@@ -15,53 +19,48 @@ type RecipeFormProps = {
   recipe?: Recipe | null;
 };
 
-// Convert YouTube URL to embed format
-const convertToEmbedUrl = (url: string): string => {
-  if (!url) return "";
-
-  if (url.includes("/embed/")) {
-    return url;
-  }
-
-  const watchMatch = url.match(/[?&]v=([^&]+)/);
-  if (watchMatch) {
-    const videoId = watchMatch[1];
-    return `https://www.youtube.com/embed/${videoId}`;
-  }
-
-  const shortMatch = url.match(/youtu\.be\/([^?]+)/);
-  if (shortMatch) {
-    const videoId = shortMatch[1];
-    return `https://www.youtube.com/embed/${videoId}`;
-  }
-
-  return url;
-};
-
 const RecipeForm: React.FC<RecipeFormProps> = ({
   isOpen,
   onClose,
   onSubmit,
   recipe,
 }) => {
-  const [formData, setFormData] = useState<Partial<Recipe>>({
-    title: "",
-    subtitle: "",
-    author: "",
-    minutes: "",
-    image: "",
-    imageDetails: "",
-    servings: "",
-    prepTime: "",
-    cookTime: "",
-    video: "",
-    category: "", // Add category field
-    ingredients: [""],
-    instructions: [{ number: 1, text: "" }],
-  });
   const modalRef = useRef<HTMLDivElement>(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const [imagePreview, setImagePreview] = useState<string>("");
+
+  // Custom hooks
+  const {
+    formData,
+    handleInputChange,
+    handleSelectChange,
+    updateFormData,
+  } = useRecipeFormData(recipe, isOpen);
+
+  const {
+    isUploading,
+    imagePreview,
+    setImagePreview,
+    handleImageUpload: uploadImage,
+    clearImage,
+  } = useImageUpload();
+
+  const { convertToEmbedUrl } = useVideoUrlConverter();
+
+  const {
+    handleIngredientChange,
+    addIngredient,
+    removeIngredient,
+  } = useRecipeIngredients(formData.ingredients || [""], (ingredients) =>
+    updateFormData({ ingredients })
+  );
+
+  const {
+    handleInstructionChange,
+    addInstruction,
+    removeInstruction,
+  } = useRecipeInstructions(
+    formData.instructions || [{ number: 1, text: "" }],
+    (instructions) => updateFormData({ instructions })
+  );
 
   useModalClose({
     modalRef,
@@ -69,157 +68,26 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
     enableSwipe: false,
   });
 
-  useEffect(() => {
-    if (recipe) {
-      setFormData({
-        ...recipe,
-        ingredients: recipe.ingredients || [""],
-        instructions: recipe.instructions || [{ number: 1, text: "" }],
-      });
-      setImagePreview(recipe.image || "");
-    } else {
-      // Get user info for author
-      const user = JSON.parse(localStorage.getItem("user") || "{}");
-      setFormData({
-        title: "",
-        subtitle: "",
-        author: user.name || "",
-        authorId: user.id,
-        minutes: "",
-        image: "",
-        imageDetails: "",
-        servings: "",
-        prepTime: "",
-        cookTime: "",
-        video: "",
-        category: "",
-        ingredients: [""],
-        instructions: [{ number: 1, text: "" }],
-      });
-      setImagePreview("");
+  React.useEffect(() => {
+    if (recipe?.image) {
+      setImagePreview(recipe.image);
     }
-  }, [recipe, isOpen]);
+  }, [recipe, setImagePreview]);
 
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const handleImageUploadWrapper = (e: React.ChangeEvent<HTMLInputElement>) => {
+    uploadImage(e, (url) => {
+      updateFormData({ image: url, imageDetails: url });
+    });
   };
 
-  const handleSelectChange = (
-    e: React.ChangeEvent<HTMLSelectElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      alert("Please select an image file");
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      alert("Image size must be less than 5MB");
-      return;
-    }
-
-    try {
-      setIsUploading(true);
-
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onloadend = async () => {
-        try {
-          const base64String = reader.result as string;
-
-          const response = await apiFetch("/api/upload", {
-            method: "POST",
-            body: JSON.stringify({ image: base64String }),
-          });
-
-          if (response.url) {
-            setFormData((prev) => ({
-              ...prev,
-              image: response.url,
-              imageDetails: response.url,
-            }));
-            setImagePreview(response.url);
-          } else {
-            throw new Error("No URL returned from upload");
-          }
-        } catch (error: any) {
-          console.error("Upload error:", error);
-          alert(
-            "Failed to upload image: " + (error?.message || "Unknown error")
-          );
-        } finally {
-          setIsUploading(false);
-        }
-      };
-
-      reader.onerror = (error) => {
-        console.error("FileReader error:", error);
-        alert("Failed to read file");
-        setIsUploading(false);
-      };
-    } catch (error: any) {
-      console.error("Upload error:", error);
-      alert("Failed to upload image: " + (error?.message || "Unknown error"));
-      setIsUploading(false);
-    }
-  };
-
-  const handleIngredientChange = (index: number, value: string) => {
-    const newIngredients = [...(formData.ingredients || [])];
-    newIngredients[index] = value;
-    setFormData((prev) => ({ ...prev, ingredients: newIngredients }));
-  };
-
-  const addIngredient = () => {
-    setFormData((prev) => ({
-      ...prev,
-      ingredients: [...(prev.ingredients || []), ""],
-    }));
-  };
-
-  const removeIngredient = (index: number) => {
-    const newIngredients = formData.ingredients?.filter((_, i) => i !== index);
-    setFormData((prev) => ({ ...prev, ingredients: newIngredients }));
-  };
-
-  const handleInstructionChange = (index: number, value: string) => {
-    const newInstructions = [...(formData.instructions || [])];
-    newInstructions[index] = { number: index + 1, text: value };
-    setFormData((prev) => ({ ...prev, instructions: newInstructions }));
-  };
-
-  const addInstruction = () => {
-    const nextNumber = (formData.instructions?.length || 0) + 1;
-    setFormData((prev) => ({
-      ...prev,
-      instructions: [
-        ...(prev.instructions || []),
-        { number: nextNumber, text: "" },
-      ],
-    }));
-  };
-
-  const removeInstruction = (index: number) => {
-    const newInstructions = formData.instructions
-      ?.filter((_, i) => i !== index)
-      .map((inst, i) => ({ number: i + 1, text: inst.text }));
-    setFormData((prev) => ({ ...prev, instructions: newInstructions }));
+  const handleClearImage = () => {
+    clearImage();
+    updateFormData({ image: "", imageDetails: "" });
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Get user info for author
     const user = JSON.parse(localStorage.getItem("user") || "{}");
 
     const processedData: Recipe = {
@@ -282,14 +150,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
                   />
                   <button
                     type="button"
-                    onClick={() => {
-                      setImagePreview("");
-                      setFormData((prev) => ({
-                        ...prev,
-                        image: "",
-                        imageDetails: "",
-                      }));
-                    }}
+                    onClick={handleClearImage}
                     className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full hover:bg-red-600"
                   >
                     <X size={16} />
@@ -300,7 +161,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={handleImageUpload}
+                    onChange={handleImageUploadWrapper}
                     className="hidden"
                     disabled={isUploading}
                   />
@@ -368,7 +229,9 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
                 required
                 className="mt-1 w-full px-3 py-3.5 bg-white/10 border border-white/20 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-white/50"
               >
-                <option value="" className="bg-neutral-900">Select a category</option>
+                <option value="" className="bg-neutral-900">
+                  Select a category
+                </option>
                 {RECIPE_CATEGORIES.map((cat) => (
                   <option key={cat.id} value={cat.id} className="bg-neutral-900">
                     {cat.name}
@@ -471,7 +334,7 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
                 onChange={handleInputChange}
                 onBlur={(e) => {
                   const embedUrl = convertToEmbedUrl(e.target.value);
-                  setFormData((prev) => ({ ...prev, video: embedUrl }));
+                  updateFormData({ video: embedUrl });
                 }}
                 placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/..."
                 className="mt-1 bg-white/10 border-white/20 text-white placeholder:text-gray-400"
@@ -594,3 +457,4 @@ const RecipeForm: React.FC<RecipeFormProps> = ({
 };
 
 export default RecipeForm;
+

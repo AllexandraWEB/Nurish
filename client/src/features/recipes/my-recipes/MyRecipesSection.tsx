@@ -1,124 +1,27 @@
-import { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/ui/button";
 import RecipeCard from "@/features/recipes/shared/RecipeCard";
-import { apiFetch } from "@/lib/api";
 import RecipeDetailsModal from "../shared/RecipeDetailsModal";
 import RecipeForm from "../shared/RecipeForm";
-
-type Recipe = {
-  _id?: string;
-  title: string;
-  subtitle?: string;
-  author: string;
-  authorId?: string;
-  minutes: number | string;
-  image?: string;
-  imageDetails: string;
-  servings?: string;
-  prepTime?: string;
-  cookTime?: string;
-  video?: string;
-  recipeDetails?: string[];
-  ingredients?: string[];
-  instructions?: { number: number; text: string }[];
-};
+import { useMyRecipes } from "./hooks/useMyRecipes";
 
 const MyRecipesSection = () => {
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingRecipe, setEditingRecipe] = useState<Recipe | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
-  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
-
-  useEffect(() => {
-    fetchMyRecipes();
-  }, []);
-
-  const fetchMyRecipes = async () => {
-    try {
-      setIsLoading(true);
-      const data = await apiFetch("/api/recipes/my-recipes");
-      setRecipes(data);
-    } catch (error) {
-      console.error("Failed to fetch recipes:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleCreateRecipe = async (recipe: Recipe) => {
-    try {
-      await apiFetch("/api/recipes", {
-        method: "POST",
-        body: JSON.stringify({
-          ...recipe,
-          isPublic: false, // Private recipes for personal use
-        }),
-      });
-      setIsFormOpen(false);
-      fetchMyRecipes();
-    } catch (error) {
-      console.error("Failed to create recipe:", error);
-      alert("Failed to create recipe");
-    }
-  };
-
-  const handleUpdateRecipe = async (recipe: Recipe) => {
-    try {
-      await apiFetch(`/api/recipes/${recipe._id}`, {
-        method: "PUT",
-        body: JSON.stringify(recipe),
-      });
-      setIsFormOpen(false);
-      setEditingRecipe(null);
-      setIsDetailsModalOpen(false);
-      fetchMyRecipes();
-    } catch (error) {
-      console.error("Failed to update recipe:", error);
-      alert("Failed to update recipe");
-    }
-  };
-
-  const handleDeleteRecipe = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this recipe?")) return;
-
-    try {
-      await apiFetch(`/api/recipes/${id}`, {
-        method: "DELETE",
-      });
-      setIsDetailsModalOpen(false);
-      fetchMyRecipes();
-    } catch (error) {
-      console.error("Failed to delete recipe:", error);
-      alert("Failed to delete recipe");
-    }
-  };
-
-  const handleCloseForm = () => {
-    setIsFormOpen(false);
-    setEditingRecipe(null);
-  };
-
-  const handleRecipeClick = (recipe: Recipe) => {
-    setSelectedRecipe(recipe);
-    setIsDetailsModalOpen(true);
-  };
-
-  const handleEditFromModal = () => {
-    if (selectedRecipe) {
-      setEditingRecipe(selectedRecipe);
-      setIsDetailsModalOpen(false);
-      setIsFormOpen(true);
-    }
-  };
-
-  const handleDeleteFromModal = () => {
-    if (selectedRecipe?._id) {
-      handleDeleteRecipe(selectedRecipe._id);
-    }
-  };
+  const {
+    recipes,
+    isFormOpen,
+    editingRecipe,
+    isLoading,
+    selectedRecipe,
+    isDetailsModalOpen,
+    handleCreateRecipe,
+    handleUpdateRecipe,
+    handleCloseForm,
+    handleRecipeClick,
+    handleCloseModal,
+    handleEditFromModal,
+    handleDeleteFromModal,
+    openForm,
+  } = useMyRecipes();
 
   return (
     <div className="mt-20 p-4 md:p-0 container max-w-[1288px] mx-auto">
@@ -126,7 +29,7 @@ const MyRecipesSection = () => {
         <div className="flex justify-between items-center mb-8">
           <h1 className="recipes-headline">My Recipes</h1>
           <Button
-            onClick={() => setIsFormOpen(true)}
+            onClick={openForm}
             className="rounded-full"
             size="lg"
           >
@@ -144,7 +47,7 @@ const MyRecipesSection = () => {
             <p className="text-neutral-400 mb-4">
               You haven't created any recipes yet
             </p>
-            <Button onClick={() => setIsFormOpen(true)} className="rounded-full">
+            <Button onClick={openForm} className="rounded-full">
               <Plus className="mr-2" size={20} />
               Create Your First Recipe
             </Button>
@@ -176,7 +79,7 @@ const MyRecipesSection = () => {
 
       <RecipeDetailsModal
         isOpen={isDetailsModalOpen}
-        onClose={() => setIsDetailsModalOpen(false)}
+        onClose={handleCloseModal}
         recipe={selectedRecipe}
         onEdit={handleEditFromModal}
         onDelete={handleDeleteFromModal}

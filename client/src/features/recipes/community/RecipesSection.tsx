@@ -1,106 +1,45 @@
 import RecipeCard from "@/features/recipes/shared/RecipeCard";
 import RecipeForm from "../shared/RecipeForm";
-import { useState, useEffect } from "react";
-import { apiFetch } from "@/lib/api";
 import RecipeDetailsModal from "../shared/RecipeDetailsModal";
-import { useParams, useNavigate } from "react-router-dom";
-
-type Recipe = {
-  _id?: string;
-  title: string;
-  subtitle?: string;
-  author: string;
-  authorId?: string;
-  minutes: number | string;
-  image?: string;
-  imageDetails: string;
-  servings?: string;
-  prepTime?: string;
-  cookTime?: string;
-  video?: string;
-  ingredients?: string[];
-  instructions?: { number: number; text: string }[];
-  recipeDetails?: string[];
-};
+import { useCommunityRecipes } from "./hooks/useCommunityRecipes";
 
 const RecipesSection = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [allRecipes, setAllRecipes] = useState<Recipe[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    fetchAllRecipes();
-  }, []);
-
-  useEffect(() => {
-    if (id && allRecipes.length > 0) {
-      const recipe = allRecipes.find((r) => r._id === id);
-      if (recipe) {
-        setSelectedRecipe(recipe);
-        setIsModalOpen(true);
-      }
-    }
-  }, [id, allRecipes]);
-
-  const fetchAllRecipes = async () => {
-    try {
-      setLoading(true);
-      const recipes = await apiFetch("/api/recipes");
-      setAllRecipes(recipes);
-    } catch (error) {
-      console.error("Failed to fetch recipes:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleRecipeClick = (recipe: Recipe) => {
-    navigate(`/recipes/${recipe._id}`);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    navigate("/recipes");
-  };
-
-  const handleAddPublicRecipe = () => {
-    // Check if user is logged in
-    const user = JSON.parse(localStorage.getItem("user") || "null");
-    if (!user) {
-      alert("Please log in to add a recipe");
-      window.location.href = "/login";
-      return;
-    }
-    setIsFormOpen(true);
-  };
-
-  const handleSubmitRecipe = async (recipeData: Recipe) => {
-    try {
-      await apiFetch("/api/recipes", {
-        method: "POST",
-        body: JSON.stringify({
-          ...recipeData,
-          isPublic: true, // Public recipes for community
-        }),
-      });
-      setIsFormOpen(false);
-      fetchAllRecipes(); // Refresh the recipes list
-    } catch (error) {
-      console.error("Error creating recipe:", error);
-      alert("Failed to create recipe");
-    }
-  };
+  const {
+    isModalOpen,
+    selectedRecipe,
+    isFormOpen,
+    allRecipes,
+    loading,
+    error,
+    handleRecipeClick,
+    handleCloseModal,
+    handleAddPublicRecipe,
+    handleSubmitRecipe,
+    handleCloseForm,
+    fetchAllRecipes,
+  } = useCommunityRecipes();
 
   if (loading) {
     return (
       <div className="mt-20 p-4 md:p-0 container max-w-[1288px] mx-auto">
         <div className="flex justify-center items-center h-64">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="mt-20 p-4 md:p-0 container max-w-[1288px] mx-auto">
+        <div className="text-center py-20">
+          <p className="text-red-400 text-xl mb-4">Error: {error}</p>
+          <button
+            onClick={fetchAllRecipes}
+            className="px-6 py-3 bg-white text-black rounded-full hover:bg-gray-200 transition"
+          >
+            Try Again
+          </button>
         </div>
       </div>
     );
@@ -158,7 +97,7 @@ const RecipesSection = () => {
 
       <RecipeForm
         isOpen={isFormOpen}
-        onClose={() => setIsFormOpen(false)}
+        onClose={handleCloseForm}
         onSubmit={handleSubmitRecipe}
       />
     </div>
