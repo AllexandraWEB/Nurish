@@ -13,6 +13,7 @@ import FavoritesPage from "@/pages/FavoritesPage";
 import CategoriesPage from "@/pages/CategoriesPage";
 import LoginPage from "@/pages/LoginPage";
 import RegisterPage from "@/pages/RegisterPage";
+import NotFoundPage from "@/pages/NotFoundPage";
 import ProtectedRoute from "@/layouts/ProtectedRoute";
 import { FavoritesProvider } from "@/context/FavoritesContext";
 
@@ -30,11 +31,10 @@ function AppContent() {
           <Route path="/recipes/:id" element={<RecipesPage />} />
           <Route path="/popular-recipes" element={<PopularRecipesPage />} />
           <Route path="/popular-recipes/:id" element={<PopularRecipesPage />} />
+
+          {/* Category routes */}
           <Route path="/categories/:category" element={<CategoriesPage />} />
-          <Route
-            path="/categories/:category/:id"
-            element={<CategoriesPage />}
-          />
+          <Route path="/categories/:category/:id" element={<CategoriesPage />} />
 
           <Route
             path="/my-recipes"
@@ -70,6 +70,9 @@ function AppContent() {
           />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+
+          {/* 404 Page */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </div>
     </FavoritesProvider>
