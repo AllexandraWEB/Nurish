@@ -3,7 +3,7 @@ import { Beef, Fish, Leaf, Soup, Utensils } from "lucide-react";
 export const guestNavLinks = [
   { name: "Popular Recipes", href: "/popular-recipes" },
   { name: "Recipes", href: "/recipes" },
-  { name: "Categories", href: "/categories" },
+  { name: "Categories", href: "/categories/breakfast" },
 ];
 
 export const userNavLinks = [

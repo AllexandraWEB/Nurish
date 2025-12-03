@@ -1,9 +1,11 @@
-export const logout = async () => {
+import { NavigateFunction } from "react-router-dom";
+
+export const logout = async (navigate: NavigateFunction) => {
   try {
     const token = localStorage.getItem('token');
     
     if (token) {
-      // Optional: call backend logout endpoint
+      // Call backend logout endpoint
       await fetch('http://localhost:5001/api/auth/logout', {
         method: 'POST',
         headers: {
@@ -19,6 +21,6 @@ export const logout = async () => {
     localStorage.removeItem('user');
     
     // Redirect to login
-    window.location.href = '/login';
+    navigate("/login");
   }
 };

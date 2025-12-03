@@ -1,42 +1,17 @@
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
-import { useState } from "react";
-import { apiFetch } from "@/lib/api";
 import Separator from "@/ui/SeparatorTemplate";
 import { Button } from "@/ui/button";
+import { useLogin } from "../hooks/useLogin";
 
 const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setIsLoading(true);
-
-    try {
-      const response = await apiFetch("/api/auth/login", {
-        method: "POST",
-        body: JSON.stringify({ email, password }),
-      });
-
-      console.log("Login response:", response);
-
-      if (response.token) {
-        localStorage.setItem("token", response.token);
-        localStorage.setItem("user", JSON.stringify(response.user));
-        console.log("Token saved successfully");
-        window.location.href = "/recipes";
-      }
-    } catch (err: any) {
-      console.error("Login error:", err);
-      setError(err.message || "Invalid credentials");
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const {
+    formData,
+    error,
+    loading,
+    handleInputChange,
+    handleSubmit,
+  } = useLogin();
 
   return (
     <div className="w-full max-w-[500px] bg-[#160000] px-4 py-12 text-center text-white rounded-3xl shadow-2xl mx-auto">
@@ -79,15 +54,15 @@ const LoginForm = () => {
           <TextField
             label="Email Address"
             variant="outlined"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={formData.email}
+            onChange={(e) => handleInputChange("email", e.target.value)}
           />
           <TextField
             label="Password"
             variant="outlined"
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={formData.password}
+            onChange={(e) => handleInputChange("password", e.target.value)}
           />
 
           {error && (
@@ -164,7 +139,7 @@ const LoginForm = () => {
           {/* Register Link */}
           <div className="pt-4">
             <p className="text-gray-400">
-              Don’t have an account?{" "}
+              Don't have an account?{" "}
               <a href="/register" className="text-gray-50 hover:underline">
                 Create one
               </a>

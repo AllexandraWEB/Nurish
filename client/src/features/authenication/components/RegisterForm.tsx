@@ -2,50 +2,16 @@ import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import { Button } from "@/ui/button";
 import Separator from "@/ui/SeparatorTemplate";
-import { useState } from "react";
-import { apiFetch } from "@/lib/api";
+import { useRegister } from "../hooks/useRegister";
 
 const RegisterForm = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [repeatPassword, setRepeatPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-
-    try {
-      const response = await apiFetch("/api/auth/register", {
-        method: "POST",
-        body: JSON.stringify({ name, email, password }),
-      });
-
-      console.log("Register response:", response);
-
-      // Save the token to localStorage
-      if (response.token) {
-        localStorage.setItem("token", response.token);
-        console.log("Token saved successfully");
-      }
-
-      // Save user info if needed
-      if (response.user) {
-        localStorage.setItem("user", JSON.stringify(response.user));
-      }
-
-      // Redirect to recipes page
-      window.location.href = "/recipes";
-    } catch (err: any) {
-      console.error("Register error:", err);
-      setError(err.message || "Registration failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    formData,
+    error,
+    loading,
+    handleInputChange,
+    handleSubmit,
+  } = useRegister();
 
   return (
     <div className="w-full max-w-[500px] bg-[#160000] px-4 py-12 text-center text-white rounded-3xl shadow-2xl mx-auto">
@@ -88,28 +54,28 @@ const RegisterForm = () => {
           <TextField
             label="Full Name"
             variant="outlined"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={formData.name}
+            onChange={(e) => handleInputChange("name", e.target.value)}
           />
           <TextField
             label="Email Address"
             variant="outlined"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={formData.email}
+            onChange={(e) => handleInputChange("email", e.target.value)}
           />
           <TextField
             label="Password"
             variant="outlined"
             type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={formData.password}
+            onChange={(e) => handleInputChange("password", e.target.value)}
           />
           <TextField
             label="Repeat Password"
             variant="outlined"
             type="password"
-            value={repeatPassword}
-            onChange={(e) => setRepeatPassword(e.target.value)}
+            value={formData.repeatPassword}
+            onChange={(e) => handleInputChange("repeatPassword", e.target.value)}
           />
 
           {error && (
@@ -117,6 +83,7 @@ const RegisterForm = () => {
               {error}
             </div>
           )}
+
           {/* Submit Button */}
           <Button
             variant="default"
@@ -127,12 +94,13 @@ const RegisterForm = () => {
           >
             {loading ? "Submitting..." : "Submit"}
           </Button>
+
           {/* Separator */}
           <div className="w-10/12">
             <Separator text="Or continue with" />
           </div>
 
-          {/* Buttons */}
+          {/* Social Buttons */}
           <div className="flex gap-3 w-10/12">
             <Button
               variant="default"
@@ -170,11 +138,12 @@ const RegisterForm = () => {
               Apple
             </Button>
           </div>
+
           {/* Login Path */}
           <div className="pt-4">
             <p className="text-gray-400">
               Already have an account?{" "}
-              <a href="/login" className="text-gray-50">
+              <a href="/login" className="text-gray-50 hover:underline">
                 Sign in
               </a>
             </p>

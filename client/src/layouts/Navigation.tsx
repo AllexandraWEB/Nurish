@@ -2,7 +2,8 @@ import { Button } from "@/ui/button";
 import { guestNavLinks, userNavLinks } from "@/constants";
 import { Leaf, Plus, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { apiFetch } from "@/lib/api";
+import { useLogout } from "@/features/authenication/hooks/useLogout";
+import { Link } from "react-router-dom";
 
 const Navigation = () => {
   const [user, setUser] = useState<any>(() => {
@@ -14,6 +15,7 @@ const Navigation = () => {
   });
 
   const [menuOpen, setMenuOpen] = useState(false);
+  const { handleLogout } = useLogout();
 
   useEffect(() => {
     const onStorage = () => {
@@ -27,22 +29,6 @@ const Navigation = () => {
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
-  async function handleLogout() {
-    try {
-      const token = localStorage.getItem("token");
-      if (token) {
-        await apiFetch("/api/auth/logout", { method: "POST" });
-      }
-    } catch (error) {
-      console.error("Logout error:", error);
-    } finally {
-      // Always clear both token and user
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      window.location.href = "/";
-    }
-  }
-
   const links = user ? userNavLinks : guestNavLinks;
 
   return (
@@ -51,21 +37,21 @@ const Navigation = () => {
         {/* Logo */}
         <div className="flex gap-2 items-center text-3xl font-light tracking-widest">
           <Leaf />
-          <a href="/" className="uppercase">
+          <Link to="/" className="uppercase">
             Nurish
-          </a>
+          </Link>
         </div>
 
         {/* Desktop Navigation Links */}
         <ul className="hidden lg:flex space-x-10 text-lg uppercase tracking-wide cursor-pointer">
           {links.map((link) => (
             <li key={link.name}>
-              <a
-                href={link.href}
+              <Link
+                to={link.href}
                 className="hover:text-gray-300 transition-colors duration-200"
               >
                 {link.name}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
@@ -87,7 +73,7 @@ const Navigation = () => {
               size="sm"
               className="uppercase text-lg font-display font-normal"
             >
-              <a href="/login">Join Now</a>
+              <Link to="/login">Join Now</Link>
             </Button>
           )}
         </div>
@@ -116,13 +102,13 @@ const Navigation = () => {
           <ul className="flex flex-col space-y-6 text-3xl uppercase tracking-widest font-light">
             {links.map((link) => (
               <li key={link.name}>
-                <a
-                  href={link.href}
+                <Link
+                  to={link.href}
                   className="hover:text-gray-300 transition-colors duration-200"
                   onClick={() => setMenuOpen(false)}
                 >
                   {link.name}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
@@ -135,7 +121,7 @@ const Navigation = () => {
               onClick={() => setMenuOpen(false)}
             >
               <Plus />
-              <a href="/add-recipe">Add Recipe</a>
+              <Link to="/my-recipes">Add Recipe</Link>
             </Button>
 
             {user ? (
@@ -154,7 +140,7 @@ const Navigation = () => {
                 className="uppercase text-lg font-display font-normal"
                 onClick={() => setMenuOpen(false)}
               >
-                <a href="/login">Join Now</a>
+                <Link to="/login">Join Now</Link>
               </Button>
             )}
           </div>

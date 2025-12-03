@@ -1,6 +1,7 @@
 import { Heart } from "lucide-react";
 import { useFavorites } from "@/context/FavoritesContext";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 interface RecipeCardProps {
   title: string;
@@ -17,6 +18,7 @@ const SmallRecipeCard: React.FC<RecipeCardProps> = ({
   onClick,
   recipe,
 }) => {
+  const navigate = useNavigate();
   const { addToFavorites, removeFromFavorites, isFavorite } = useFavorites();
   const [isAnimating, setIsAnimating] = useState(false);
   const favorited = isFavorite(title);
@@ -26,7 +28,7 @@ const SmallRecipeCard: React.FC<RecipeCardProps> = ({
 
     const user = JSON.parse(localStorage.getItem("user") || "null");
     if (!user) {
-      window.location.href = "/login";
+      navigate("/login");
       return;
     }
 
