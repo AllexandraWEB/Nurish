@@ -16,6 +16,7 @@ export type Recipe = {
   recipeDetails?: string[];
   isPublic?: boolean;
   category?: string;
+  featured?: 'popular' | 'fast' | null;
 };
 
 export type RecipeFormData = Omit<Recipe, "_id">;

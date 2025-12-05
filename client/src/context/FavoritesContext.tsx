@@ -60,6 +60,7 @@ export const FavoritesProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
+  // Add recipe to favorites
   const addToFavorites = async (recipe: Recipe) => {
     try {
       console.log("Adding to favorites:", recipe);

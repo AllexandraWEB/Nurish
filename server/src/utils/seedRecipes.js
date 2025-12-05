@@ -1,41 +1,21 @@
-import { Beef, Fish, Leaf, Soup, Utensils } from "lucide-react";
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+import Recipe from '../models/Recipe.js';
+import User from '../models/User.js';
 
-export const guestNavLinks = [
-  { name: "Popular Recipes", href: "/popular-recipes" },
-  { name: "Recipes", href: "/recipes" },
-  { name: "Categories", href: "/categories/breakfast" },
-];
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-export const userNavLinks = [
-  { name: "Popular Recipes", href: "/popular-recipes" },
-  { name: "Recipes", href: "/recipes" },
-  { name: "Categories", href: "/categories/breakfast" },
-  { name: "Favorites", href: "/favorites" },
-  { name: "My Recipes", href: "/my-recipes" },
-];
+dotenv.config({ path: join(__dirname, '../../.env') });
 
-export const heroSlides = [
+const POPULAR_RECIPES = [
   {
-    id: 1,
-    title: "Premium Restaurant",
-    subtitle: "in your home",
-    image: "/images/hero-background-1.png",
-  },
-  {
-    id: 2,
-    title: "Premium Restaurant",
-    subtitle: "in your home",
-    image: "/images/hero-background-3.png",
-  },
-];
-
-export const RECIPES = [
-  {
-    _id: "popular-1",
     title: "Easy Meatballs with Arugula",
     subtitle: "for healthy lifestyle",
     author: "Chef Mario",
-    minutes: 120,
+    minutes: "120",
     image: "/recipe-images/Recipe-1.jpeg",
     imageDetails: "/recipe-images/Recipe-1.png",
     video: "https://www.youtube.com/embed/XxQiY1qKv9Y?si=ic9FR0EOckMmNKew",
@@ -44,6 +24,8 @@ export const RECIPES = [
     cookTime: "40 min",
     recipeDetails: ["2 servings", "35 min prep", "40 min cook"],
     isPublic: true,
+    category: "dinner",
+    featured: "popular", // Add this tag
     ingredients: [
       "500g ground beef",
       "2 cups fresh arugula",
@@ -78,11 +60,10 @@ export const RECIPES = [
     ],
   },
   {
-    _id: "popular-2",
     title: "Vegan Avocado Salad",
     subtitle: "fresh and healthy",
     author: "Chef Lina",
-    minutes: 45,
+    minutes: "45",
     image: "/recipe-images/Recipe-2.jpeg",
     imageDetails: "/recipe-images/Recipe-2.png",
     video: "https://www.youtube.com/embed/XxQiY1qKv9Y?si=ic9FR0EOckMmNKew",
@@ -91,6 +72,8 @@ export const RECIPES = [
     cookTime: "0 min",
     recipeDetails: ["4 servings", "15 min prep", "No cooking"],
     isPublic: true,
+    category: "salads",
+    featured: "popular", // Add this tag
     ingredients: [
       "2 ripe avocados",
       "2 cups mixed greens",
@@ -125,11 +108,10 @@ export const RECIPES = [
     ],
   },
   {
-    _id: "popular-3",
     title: "Spicy Thai Noodles",
     subtitle: "bold and flavorful",
     author: "Chef Aisha",
-    minutes: 60,
+    minutes: "60",
     image: "/recipe-images/Recipe-3.jpeg",
     imageDetails: "/recipe-images/Recipe-3.png",
     video: "https://www.youtube.com/embed/XxQiY1qKv9Y?si=ic9FR0EOckMmNKew",
@@ -138,6 +120,8 @@ export const RECIPES = [
     cookTime: "15 min",
     recipeDetails: ["3 servings", "20 min prep", "15 min cook"],
     isPublic: true,
+    category: "asian",
+    featured: "popular", // Add this tag
     ingredients: [
       "200g rice noodles",
       "2 tbsp vegetable oil",
@@ -174,11 +158,10 @@ export const RECIPES = [
     ],
   },
   {
-    _id: "popular-4",
     title: "Creamy Garlic Pasta",
     subtitle: "comfort food classic",
     author: "Chef Marco",
-    minutes: 90,
+    minutes: "90",
     image: "/recipe-images/Recipe-6.jpeg",
     imageDetails: "/recipe-images/Recipe-6.png",
     video: "https://www.youtube.com/embed/XxQiY1qKv9Y?si=ic9FR0EOckMmNKew",
@@ -187,6 +170,8 @@ export const RECIPES = [
     cookTime: "20 min",
     recipeDetails: ["4 servings", "10 min prep", "20 min cook"],
     isPublic: true,
+    category: "pasta",
+    featured: "popular", // Add this tag
     ingredients: [
       "400g fettuccine pasta",
       "4 cloves garlic, minced",
@@ -222,56 +207,12 @@ export const RECIPES = [
   },
 ];
 
-export const CATEGORIES = [
+const FAST_RECIPES = [
   {
-    name: "Meats",
-    icon: Beef,
-    link: "/categories/meats",
-  },
-  {
-    name: "Seafood",
-    icon: Fish,
-    link: "/categories/seafood",
-  },
-  {
-    name: "Vegetarian",
-    icon: Leaf,
-    link: "/categories/vegetarian",
-  },
-  {
-    name: "Soups",
-    icon: Soup,
-    link: "/categories/soups",
-  },
-  {
-    name: "World Cuisine",
-    icon: Utensils,
-    link: "/categories/world-cuisine",
-  },
-  {
-    name: "Meats",
-    icon: Beef,
-    link: "/categories/meats",
-  },
-  {
-    name: "Seafood",
-    icon: Fish,
-    link: "/categories/seafood",
-  },
-  {
-    name: "Vegetarian",
-    icon: Leaf,
-    link: "/categories/vegetarian",
-  },
-];
-
-export const fastRecipes = [
-  {
-    _id: "fast-1",
     title: "Quick Chicken Stir-Fry",
     subtitle: "easy weeknight dinner",
     author: "Chef Mario",
-    minutes: 25,
+    minutes: "25",
     image: "/recipe-images/Recipe-5.jpeg",
     imageDetails: "/recipe-images/Recipe-5.png",
     servings: "2 servings",
@@ -280,6 +221,8 @@ export const fastRecipes = [
     recipeDetails: ["2 servings", "10 min prep", "15 min cook"],
     video: "https://www.youtube.com/embed/XxQiY1qKv9Y?si=ic9FR0EOckMmNKew",
     isPublic: true,
+    category: "dinner",
+    featured: "fast", // Add this tag
     ingredients: [
       "300g chicken breast, sliced",
       "2 cups mixed vegetables",
@@ -313,11 +256,10 @@ export const fastRecipes = [
     ],
   },
   {
-    _id: "fast-2",
     title: "Quick Caprese Salad",
     subtitle: "fresh and simple",
     author: "Chef Lina",
-    minutes: 15,
+    minutes: "15",
     image: "/recipe-images/Recipe-4.jpeg",
     imageDetails: "/recipe-images/Recipe-4.png",
     servings: "3 servings",
@@ -326,6 +268,8 @@ export const fastRecipes = [
     recipeDetails: ["3 servings", "15 min prep", "No cooking"],
     video: "https://www.youtube.com/embed/XxQiY1qKv9Y?si=ic9FR0EOckMmNKew",
     isPublic: true,
+    category: "salads",
+    featured: "fast", // Add this tag
     ingredients: [
       "4 large tomatoes, sliced",
       "250g fresh mozzarella, sliced",
@@ -358,11 +302,10 @@ export const fastRecipes = [
     ],
   },
   {
-    _id: "fast-3",
     title: "Fast Pad Thai",
     subtitle: "restaurant quality",
     author: "Chef Aisha",
-    minutes: 20,
+    minutes: "20",
     image: "/recipe-images/Recipe-8.jpeg",
     imageDetails: "/recipe-images/Recipe-8.png",
     servings: "2 servings",
@@ -371,6 +314,8 @@ export const fastRecipes = [
     recipeDetails: ["2 servings", "10 min prep", "10 min cook"],
     video: "https://www.youtube.com/embed/XxQiY1qKv9Y?si=ic9FR0EOckMmNKew",
     isPublic: true,
+    category: "asian",
+    featured: "fast", // Add this tag
     ingredients: [
       "200g rice noodles",
       "2 eggs",
@@ -406,11 +351,10 @@ export const fastRecipes = [
     ],
   },
   {
-    _id: "fast-4",
     title: "Express Carbonara",
     subtitle: "Italian classic",
     author: "Chef Marco",
-    minutes: 20,
+    minutes: "20",
     image: "/recipe-images/Recipe-7.jpeg",
     imageDetails: "/recipe-images/Recipe-7.png",
     servings: "3 servings",
@@ -419,6 +363,8 @@ export const fastRecipes = [
     recipeDetails: ["3 servings", "5 min prep", "15 min cook"],
     video: "https://www.youtube.com/embed/XxQiY1qKv9Y?si=ic9FR0EOckMmNKew",
     isPublic: true,
+    category: "pasta",
+    featured: "fast", // Add this tag
     ingredients: [
       "300g spaghetti",
       "150g bacon, diced",
@@ -452,25 +398,50 @@ export const fastRecipes = [
   },
 ];
 
-export const RECIPE_CATEGORIES = [
-  { id: "breakfast", name: "Breakfast", image: "/category-images/category-breakfast.jpeg" },
-  { id: "lunch", name: "Lunch", image: "/category-images/category-lunch.jpeg" },
-  { id: "dinner", name: "Dinner", image: "/category-images/category-dinner.jpeg" },
-  { id: "desserts", name: "Desserts", image: "/category-images/category-desserts.jpeg" },
-  { id: "snacks", name: "Snacks", image: "/category-images/category-snacks.jpeg" },
-  { id: "drinks", name: "Drinks", image: "/category-images/category-drinks.jpeg" },
-  { id: "vegan", name: "Vegan", image: "/category-images/category-vegan.jpeg" },
-  { id: "healthy", name: "Healthy", image: "/category-images/category-healthy.jpeg" },
-  { id: "salads", name: "Salads", image: "/category-images/category-salads.jpeg" },
-  { id: "soups", name: "Soups", image: "/category-images/category-soups.jpeg" },
-  { id: "pasta", name: "Pasta", image: "/category-images/category-pasta.jpeg" },
-  { id: "seafood", name: "Seafood", image: "/category-images/category-seafood.jpeg" },
-  {
-    id: "grilling",
-    name: "Grilling & BBQ",
-    image: "/category-images/category-grilling.jpeg",
-  },
-  { id: "baking", name: "Baking", image: "/category-images/category-baking.jpeg" },
-  { id: "asian", name: "Asian Cuisine", image: "/category-images/category-asian.jpeg" },
-  { id: "italian", name: "Italian", image: "/category-images/category-italian.jpeg" },
-];
+async function seedRecipes() {
+  try {
+    console.log('Connecting to MongoDB...');
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log('Connected to MongoDB');
+
+    // Find or create a system user for these recipes
+    let systemUser = await User.findOne({ email: 'system@nurish.com' });
+    
+    if (!systemUser) {
+      console.log('Creating system user...');
+      systemUser = await User.create({
+        name: 'Nurish',  
+        email: 'system@nurish.com',
+        password: 'system-generated-recipes-' + Date.now(),
+        favorites: []
+      });
+      console.log('System user created');
+    }
+
+    const allRecipes = [...POPULAR_RECIPES, ...FAST_RECIPES];
+    
+    console.log(`Seeding ${allRecipes.length} recipes...`);
+    
+    // Delete existing featured recipes to avoid duplicates
+    await Recipe.deleteMany({ featured: { $in: ['popular', 'fast'] } });
+    console.log('Cleared existing featured recipes');
+    
+    for (const recipeData of allRecipes) {
+      // Create recipe with system user as author
+      const recipe = await Recipe.create({
+        ...recipeData,
+        author: systemUser._id,
+      });
+      
+      console.log(`✓ Created recipe: ${recipe.title} (${recipe.featured})`);
+    }
+
+    console.log('\n✅ Seeding completed successfully!');
+    process.exit(0);
+  } catch (error) {
+    console.error('❌ Error seeding recipes:', error);
+    process.exit(1);
+  }
+}
+
+seedRecipes();

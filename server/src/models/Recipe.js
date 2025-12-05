@@ -35,6 +35,11 @@ const recipeSchema = new mongoose.Schema({
     type: String,
     enum: ['breakfast', 'lunch', 'dinner', 'desserts', 'snacks', 'drinks', 'vegan', 'healthy', 'salads', 'soups', 'pasta', 'seafood', 'grilling', 'baking', 'asian', 'italian'],
   },
+  featured: {
+    type: String,
+    enum: ['popular', 'fast', null],
+    default: null,
+  },
 }, {
   timestamps: true,
 });
