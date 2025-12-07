@@ -2,6 +2,8 @@
 
 A modern, full-stack recipe sharing application built with React, TypeScript, Node.js, Express, and MongoDB. Users can browse popular recipes, share their own recipes with the community, manage personal recipes, and favorite their preferred dishes.
 
+<img width="2560" height="2040" alt="Image" src="https://github.com/user-attachments/assets/a23b50fb-e3b8-48a5-9e8d-94da76435f95" />
+
 ---
 ### Client Side
 <p>
