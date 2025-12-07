@@ -1,6 +1,8 @@
-# 🌱 NURISH - Recipe Sharing Platform
+# 🍸 NURISH - Recipe Sharing Platform
 
 A modern, full-stack recipe sharing application built with React, TypeScript, Node.js, Express, and MongoDB. Users can browse popular recipes, share their own recipes with the community, manage personal recipes, and favorite their preferred dishes.
+
+Live Demo: nurish.vercel.app
 
 <img width="2560" height="2040" alt="Image" src="https://github.com/user-attachments/assets/a23b50fb-e3b8-48a5-9e8d-94da76435f95" />
 
@@ -63,14 +65,14 @@ A modern, full-stack recipe sharing application built with React, TypeScript, No
 - 📖 **Browse Recipes** - View popular and community-shared recipes
 - ⭐ **Favorites System** - Save and manage favorite recipes
 - 🍽️ **Recipe Management** - Create, edit, and delete personal recipes
-- 🌍 **Community Recipes** - Share recipes publicly with other users
+- 🍰 **Community Recipes** - Share recipes publicly with other users
 - 🔍 **Recipe Categories** - Search by breakfast, lunch, dinner, desserts, and more
 - ⚡ **Quick Recipes** - Filter recipes under 30 minutes
 - 📱 **Responsive Design** - Mobile-first, works on all devices
 
 ### Recipe Features
 - 📝 **Detailed Information** - Ingredients, instructions, preparation time, cook time
-- 🖼️ **Image Upload** - Cloudinary integration for recipe images
+- 🥧 **Image Upload** - Cloudinary integration for recipe images
 - 🎥 **Video Support** - Embed YouTube videos for recipes
 - 🏷️ **Categorization** - 16 different recipe categories
 - 🔒 **Privacy Control** - Public/private recipe visibility
@@ -350,7 +352,7 @@ server/
 
 ---
 
-## 🌱 Environment Variables
+## 🥐 Environment Variables
 
 | Variable            | Description                          |
 |---------------------|--------------------------------------|
@@ -363,7 +365,7 @@ server/
 
 ---
 
-## 🌿 Database Seeding
+## 🥞 Database Seeding
 
 To populate the database with initial data, run the following command:
 
@@ -395,7 +397,7 @@ This will add default recipes and categories to the database.
 
 ---
 
-## 🏙 Architecture
+## 🥨 Architecture
 
 The application follows a modular architecture with separate directories for the client and server. The client is built with React and communicates with the server via RESTful APIs. The server is built with Node.js and Express, and interacts with a MongoDB database.
 
