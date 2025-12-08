@@ -18,14 +18,14 @@ const POPULAR_RECIPES = [
     minutes: "120",
     image: "/recipe-images/Recipe-1.jpeg",
     imageDetails: "/recipe-images/Recipe-1.png",
-    video: "https://www.youtube.com/embed/XxQiY1qKv9Y?si=ic9FR0EOckMmNKew",
+    video: "https://www.youtube.com/embed/qc9cHXwp_Xc?si=b5Y_V9FN616VzqLB",
     servings: "2 servings",
     prepTime: "35 min",
     cookTime: "40 min",
     recipeDetails: ["2 servings", "35 min prep", "40 min cook"],
     isPublic: true,
     category: "dinner",
-    featured: "popular", // Add this tag
+    featured: "popular",
     ingredients: [
       "500g ground beef",
       "2 cups fresh arugula",
@@ -66,14 +66,14 @@ const POPULAR_RECIPES = [
     minutes: "45",
     image: "/recipe-images/Recipe-2.jpeg",
     imageDetails: "/recipe-images/Recipe-2.png",
-    video: "https://www.youtube.com/embed/XxQiY1qKv9Y?si=ic9FR0EOckMmNKew",
+    video: "https://www.youtube.com/embed/MzTRzSwBnVk?si=aWQqgKW3cDtbC2z4",
     servings: "4 servings",
     prepTime: "15 min",
     cookTime: "0 min",
     recipeDetails: ["4 servings", "15 min prep", "No cooking"],
     isPublic: true,
     category: "salads",
-    featured: "popular", // Add this tag
+    featured: "popular",
     ingredients: [
       "2 ripe avocados",
       "2 cups mixed greens",
@@ -114,14 +114,14 @@ const POPULAR_RECIPES = [
     minutes: "60",
     image: "/recipe-images/Recipe-3.jpeg",
     imageDetails: "/recipe-images/Recipe-3.png",
-    video: "https://www.youtube.com/embed/XxQiY1qKv9Y?si=ic9FR0EOckMmNKew",
+    video: "https://www.youtube.com/embed/LyYBUsAhUUU?si=paRCsoyun-7yAD5r",
     servings: "3 servings",
     prepTime: "20 min",
     cookTime: "15 min",
     recipeDetails: ["3 servings", "20 min prep", "15 min cook"],
     isPublic: true,
     category: "asian",
-    featured: "popular", // Add this tag
+    featured: "popular",
     ingredients: [
       "200g rice noodles",
       "2 tbsp vegetable oil",
@@ -164,14 +164,14 @@ const POPULAR_RECIPES = [
     minutes: "90",
     image: "/recipe-images/Recipe-6.jpeg",
     imageDetails: "/recipe-images/Recipe-6.png",
-    video: "https://www.youtube.com/embed/XxQiY1qKv9Y?si=ic9FR0EOckMmNKew",
+    video: "https://www.youtube.com/embed/oYiRKd5l2rU?si=BDhHm3UnxLPDt8Q3",
     servings: "4 servings",
     prepTime: "10 min",
     cookTime: "20 min",
     recipeDetails: ["4 servings", "10 min prep", "20 min cook"],
     isPublic: true,
     category: "pasta",
-    featured: "popular", // Add this tag
+    featured: "popular",
     ingredients: [
       "400g fettuccine pasta",
       "4 cloves garlic, minced",
@@ -219,10 +219,10 @@ const FAST_RECIPES = [
     prepTime: "10 min",
     cookTime: "15 min",
     recipeDetails: ["2 servings", "10 min prep", "15 min cook"],
-    video: "https://www.youtube.com/embed/XxQiY1qKv9Y?si=ic9FR0EOckMmNKew",
+    video: "https://www.youtube.com/embed/rR8Nm5aok0Y?si=4djfUwlccJgyMqJU",
     isPublic: true,
     category: "dinner",
-    featured: "fast", // Add this tag
+    featured: "fast",
     ingredients: [
       "300g chicken breast, sliced",
       "2 cups mixed vegetables",
@@ -256,7 +256,7 @@ const FAST_RECIPES = [
     ],
   },
   {
-    title: "Quick Caprese Salad",
+    title: "Quick Pesto Pasta",
     subtitle: "fresh and simple",
     author: "Chef Lina",
     minutes: "15",
@@ -266,10 +266,10 @@ const FAST_RECIPES = [
     prepTime: "15 min",
     cookTime: "0 min",
     recipeDetails: ["3 servings", "15 min prep", "No cooking"],
-    video: "https://www.youtube.com/embed/XxQiY1qKv9Y?si=ic9FR0EOckMmNKew",
+    video: "https://www.youtube.com/embed/ldAINdBOjQY?si=uA7YGfoAxIxWtc3-",
     isPublic: true,
     category: "salads",
-    featured: "fast", // Add this tag
+    featured: "fast",
     ingredients: [
       "4 large tomatoes, sliced",
       "250g fresh mozzarella, sliced",
@@ -312,10 +312,10 @@ const FAST_RECIPES = [
     prepTime: "10 min",
     cookTime: "10 min",
     recipeDetails: ["2 servings", "10 min prep", "10 min cook"],
-    video: "https://www.youtube.com/embed/XxQiY1qKv9Y?si=ic9FR0EOckMmNKew",
+    video: "https://www.youtube.com/embed/l1GnRockuQw?si=D_2Vi7C2coT58M9w",
     isPublic: true,
     category: "asian",
-    featured: "fast", // Add this tag
+    featured: "fast",
     ingredients: [
       "200g rice noodles",
       "2 eggs",
@@ -361,10 +361,10 @@ const FAST_RECIPES = [
     prepTime: "5 min",
     cookTime: "15 min",
     recipeDetails: ["3 servings", "5 min prep", "15 min cook"],
-    video: "https://www.youtube.com/embed/XxQiY1qKv9Y?si=ic9FR0EOckMmNKew",
+    video: "https://www.youtube.com/embed/4nAfxzE02Gw?si=vVEXwL2vXPdv8cZ5",
     isPublic: true,
     category: "pasta",
-    featured: "fast", // Add this tag
+    featured: "fast", 
     ingredients: [
       "300g spaghetti",
       "150g bacon, diced",
@@ -410,7 +410,7 @@ async function seedRecipes() {
     if (!systemUser) {
       console.log('Creating system user...');
       systemUser = await User.create({
-        name: 'Nurish',  
+        name: 'Nurish Chefs',  
         email: 'system@nurish.com',
         password: 'system-generated-recipes-' + Date.now(),
         favorites: []

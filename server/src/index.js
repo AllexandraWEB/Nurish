@@ -45,6 +45,20 @@ app.use('/api/recipes', recipeRoutes);
 app.use('/api/favorites', favoritesRoutes);
 app.use('/api/upload', uploadRoutes);
 
+app.get('/', (req, res) => {
+  res.json({ 
+    message: 'Nurish API Server',
+    version: '1.0.0',
+    endpoints: {
+      health: '/api/health',
+      auth: '/api/auth',
+      recipes: '/api/recipes',
+      favorites: '/api/favorites',
+      upload: '/api/upload'
+    }
+  });
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
