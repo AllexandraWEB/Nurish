@@ -60,9 +60,9 @@ export const useMyRecipes = () => {
       });
       setIsFormOpen(false);
       fetchMyRecipes();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to create recipe:", error);
-      alert("Failed to create recipe");
+      alert("Please enter all the required fields");
     }
   };
 
@@ -75,11 +75,11 @@ export const useMyRecipes = () => {
       setIsFormOpen(false);
       setEditingRecipe(null);
       setIsDetailsModalOpen(false);
-      navigate("/my-recipes"); // Remove ID from URL
+      navigate("/my-recipes");
       fetchMyRecipes();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Failed to update recipe:", error);
-      alert("Failed to update recipe");
+      alert("Please enter all the required fields");
     }
   };
 

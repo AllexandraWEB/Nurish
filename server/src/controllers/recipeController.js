@@ -107,7 +107,22 @@ export const createRecipe = async (req, res) => {
     res.status(201).json(recipeWithAuthor);
   } catch (error) {
     console.error('Error creating recipe:', error);
-    res.status(500).json({ message: 'Failed to create recipe', error: error.message });
+    
+    // Handle Mongoose validation errors
+    if (error.name === 'ValidationError') {
+      const errors = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({ 
+        message: 'Validation failed', 
+        errors: errors,
+        details: error.errors // Send full error details
+      });
+    }
+    
+    // Handle other errors
+    res.status(500).json({ 
+      message: 'Failed to create recipe', 
+      error: error.message 
+    });
   }
 };
 
@@ -143,7 +158,21 @@ export const updateRecipe = async (req, res) => {
     res.json(recipeWithAuthor);
   } catch (error) {
     console.error('Error updating recipe:', error);
-    res.status(500).json({ message: 'Failed to update recipe' });
+    
+    // Handle Mongoose validation errors
+    if (error.name === 'ValidationError') {
+      const errors = Object.values(error.errors).map(err => err.message);
+      return res.status(400).json({ 
+        message: 'Validation failed', 
+        errors: errors,
+        details: error.errors
+      });
+    }
+    
+    res.status(500).json({ 
+      message: 'Failed to update recipe',
+      error: error.message
+    });
   }
 };
 

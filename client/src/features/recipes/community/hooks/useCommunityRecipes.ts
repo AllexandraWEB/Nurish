@@ -72,9 +72,9 @@ export const useCommunityRecipes = () => {
       });
       setIsFormOpen(false);
       fetchAllRecipes();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating recipe:", error);
-      alert("Failed to create recipe");
+      alert("Please enter all the required fields");
     }
   };
 

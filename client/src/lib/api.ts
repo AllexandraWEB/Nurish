@@ -32,7 +32,14 @@ export const apiFetch = async (url: string, options: RequestInit = {}) => {
         throw new Error(errorData.message || 'Unauthorized');
       }
       
-      throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      // Create error object with all data from the response
+      const error = new Error(errorData.message || `HTTP error! status: ${response.status}`);
+      // Attach additional error details to the error object
+      (error as any).errors = errorData.errors;
+      (error as any).details = errorData.details;
+      (error as any).statusCode = response.status;
+      
+      throw error;
     }
 
     return response.json();
