@@ -1,4 +1,4 @@
-import { Beef, Fish, Leaf, Soup, Utensils } from "lucide-react";
+import { Beef, Fish, Leaf, Soup, Utensils, CupSoda, IceCream, CookingPot } from "lucide-react";
 
 export const guestNavLinks = [
   { name: "Popular Recipes", href: "/popular-recipes" },
@@ -224,9 +224,9 @@ export const RECIPES = [
 
 export const CATEGORIES = [
   {
-    name: "Meats",
-    icon: Beef,
-    link: "/categories/meats",
+    name: "Dinner",
+    icon: CookingPot,
+    link: "/categories/dinner",
   },
   {
     name: "Seafood",
@@ -234,9 +234,9 @@ export const CATEGORIES = [
     link: "/categories/seafood",
   },
   {
-    name: "Vegetarian",
+    name: "Vegan",
     icon: Leaf,
-    link: "/categories/vegetarian",
+    link: "/categories/vegan",
   },
   {
     name: "Soups",
@@ -244,24 +244,24 @@ export const CATEGORIES = [
     link: "/categories/soups",
   },
   {
-    name: "World Cuisine",
+    name: "Pasta",
     icon: Utensils,
-    link: "/categories/world-cuisine",
+    link: "/categories/pasta",
   },
   {
-    name: "Meats",
+    name: "Grilling & BBQ",
     icon: Beef,
     link: "/categories/meats",
   },
   {
-    name: "Seafood",
-    icon: Fish,
-    link: "/categories/seafood",
+    name: "Snacks",
+    icon: IceCream,
+    link: "/categories/snacks",
   },
   {
-    name: "Vegetarian",
-    icon: Leaf,
-    link: "/categories/vegetarian",
+    name: "Drinks",
+    icon: CupSoda,
+    link: "/categories/drinks",
   },
 ];
 

@@ -1,14 +1,14 @@
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import Recipe from '../models/Recipe.js';
-import User from '../models/User.js';
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
+import Recipe from "../models/Recipe.js";
+import User from "../models/User.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-dotenv.config({ path: join(__dirname, '../../.env') });
+dotenv.config({ path: join(__dirname, "../../.env") });
 
 const POPULAR_RECIPES = [
   {
@@ -205,6 +205,449 @@ const POPULAR_RECIPES = [
       },
     ],
   },
+  {
+    title: "Salmon Arugula Delight",
+    subtitle: "Fresh & Nutritious",
+    author: "Chef Marina",
+    minutes: "15",
+    image: "/recipe-images/Recipe-10.jpeg",
+    imageDetails: "/recipe-images/Recipe-10.png",
+    servings: "2 servings",
+    prepTime: "10 min",
+    cookTime: "5 min",
+    recipeDetails: ["2 servings", "10 min prep", "5 min cook"],
+    video: "https://www.youtube.com/embed/39ySJGnS0E0?si=c5eH02c3NaZTe8zd",
+    isPublic: true,
+    category: "salads",
+    ingredients: [
+      "150g smoked or grilled salmon, sliced",
+      "3 cups fresh arugula",
+      "1/2 avocado, sliced",
+      "1/4 red onion, thinly sliced",
+      "1 tbsp olive oil",
+      "1 tsp lemon juice",
+      "Salt to taste",
+      "Black pepper to taste",
+      "Optional: cherry tomatoes, halved",
+    ],
+    instructions: [
+      {
+        number: 1,
+        text: "Place fresh arugula in a large salad bowl.",
+      },
+      {
+        number: 2,
+        text: "Add sliced smoked or grilled salmon on top.",
+      },
+      {
+        number: 3,
+        text: "Add avocado slices and thinly sliced red onion.",
+      },
+      {
+        number: 4,
+        text: "Drizzle with olive oil and lemon juice.",
+      },
+      {
+        number: 5,
+        text: "Season with salt and pepper, toss gently, and serve immediately.",
+      },
+    ],
+  },
+  {
+    title: "Violet Bloom Cocktail",
+    subtitle: "Floral & Refreshing",
+    author: "Mixologist Elena",
+    minutes: "8",
+    image: "/recipe-images/Recipe-11.jpeg",
+    imageDetails: "/recipe-images/Recipe-11.png",
+    servings: "1 serving",
+    prepTime: "8 min",
+    cookTime: "0 min",
+    recipeDetails: ["1 serving", "8 min prep", "no cook"],
+    video: "https://www.youtube.com/embed/Ttnf3PbJqnA?si=eOEWTbAlepMMwBj-",
+    isPublic: true,
+    category: "drinks",
+    ingredients: [
+      "50ml gin",
+      "20ml violet liqueur",
+      "15ml fresh lemon juice",
+      "10ml simple syrup",
+      "Ice cubes",
+      "Edible violets for garnish",
+      "Optional: tonic water for a lighter version",
+    ],
+    instructions: [
+      {
+        number: 1,
+        text: "Fill a shaker with ice.",
+      },
+      {
+        number: 2,
+        text: "Add gin, violet liqueur, lemon juice, and simple syrup.",
+      },
+      {
+        number: 3,
+        text: "Shake well for 10–12 seconds.",
+      },
+      {
+        number: 4,
+        text: "Strain into a chilled cocktail glass.",
+      },
+      {
+        number: 5,
+        text: "Garnish with a few edible violet flowers and serve.",
+      },
+    ],
+  },
+  {
+    title: "Mint Lemonade Cooler",
+    subtitle: "Fresh & Zesty",
+    author: "Chef Liora",
+    minutes: "10",
+    image: "/recipe-images/Recipe-12.jpeg",
+    imageDetails: "/recipe-images/Recipe-12.png",
+    servings: "3 servings",
+    prepTime: "10 min",
+    cookTime: "0 min",
+    recipeDetails: ["3 servings", "10 min prep", "no cook"],
+    video: "https://www.youtube.com/embed/5_sHXJC9ocA?si=wTwBw-Yvk5Gu8E0q",
+    isPublic: true,
+    category: "drinks",
+    ingredients: [
+      "3 lemons, juiced",
+      "3 tbsp sugar or honey",
+      "3 cups cold water",
+      "A handful of fresh mint leaves",
+      "Ice cubes",
+      "Optional: lemon slices for garnish",
+    ],
+    instructions: [
+      {
+        number: 1,
+        text: "In a pitcher, mix lemon juice with sugar or honey until dissolved.",
+      },
+      {
+        number: 2,
+        text: "Add cold water and stir well.",
+      },
+      {
+        number: 3,
+        text: "Gently crush the mint leaves with your hands to release aroma, then add them to the pitcher.",
+      },
+      {
+        number: 4,
+        text: "Add plenty of ice and stir again.",
+      },
+      {
+        number: 5,
+        text: "Serve with extra mint leaves and lemon slices if desired.",
+      },
+    ],
+  },
+  {
+    title: "Iced Green Tea Refresh",
+    subtitle: "Light & Cooling",
+    author: "Tea Master Hana",
+    minutes: "10",
+    image: "/recipe-images/Recipe-13.jpeg",
+    imageDetails: "/recipe-images/Recipe-13.png",
+    servings: "2 servings",
+    prepTime: "5 min",
+    cookTime: "5 min",
+    recipeDetails: ["2 servings", "5 min prep", "5 min brew"],
+    video: "https://www.youtube.com/embed/zZh1KNgk2W8?si=evhUbk8S4zK1KUpT",
+    isPublic: true,
+    category: "drinks",
+    ingredients: [
+      "2 green tea bags (or 2 tsp loose leaf green tea)",
+      "2 cups hot water (not boiling, ~80°C)",
+      "1–2 tsp honey or sweetener (optional)",
+      "Ice cubes",
+      "2 lemon slices",
+      "Fresh mint leaves (optional)",
+    ],
+    instructions: [
+      {
+        number: 1,
+        text: "Heat water to about 80°C (not fully boiling) to avoid bitterness.",
+      },
+      {
+        number: 2,
+        text: "Steep green tea bags for 2–3 minutes, then remove.",
+      },
+      {
+        number: 3,
+        text: "If desired, stir in honey while the tea is still warm.",
+      },
+      {
+        number: 4,
+        text: "Let the tea cool for a few minutes, then pour into a glass filled with ice.",
+      },
+      {
+        number: 5,
+        text: "Garnish with lemon slices and optional mint leaves. Serve chilled.",
+      },
+    ],
+  },
+  {
+    title: "Cucumber Edamame Garden Salad",
+    subtitle: "Crisp, Colorful & Fresh",
+    author: "Chef Aveline",
+    minutes: "12",
+    image: "/recipe-images/Recipe-14.jpeg",
+    imageDetails: "/recipe-images/Recipe-14.png",
+    servings: "2 servings",
+    prepTime: "12 min",
+    cookTime: "0 min",
+    recipeDetails: ["2 servings", "12 min prep", "no cook"],
+    video: "https://www.youtube.com/embed/nBveCvdl8_k?si=PSHYt3YFhsKAfdD4",
+    isPublic: true,
+    category: "salads",
+    ingredients: [
+      "1 medium cucumber, thinly sliced",
+      "1 cup cooked edamame (shelled)",
+      "1 small zucchini, shaved into ribbons",
+      "A handful of edible flowers",
+      "1 tbsp olive oil",
+      "1 tsp rice vinegar or lemon juice",
+      "Salt to taste",
+      "Black pepper to taste",
+      "Optional: sesame seeds",
+    ],
+    instructions: [
+      {
+        number: 1,
+        text: "Thinly slice the cucumber and place it in a large bowl.",
+      },
+      {
+        number: 2,
+        text: "Shave the zucchini into thin ribbons using a peeler and add to the bowl.",
+      },
+      {
+        number: 3,
+        text: "Add the cooked, cooled edamame.",
+      },
+      {
+        number: 4,
+        text: "Drizzle with olive oil and rice vinegar (or lemon juice).",
+      },
+      {
+        number: 5,
+        text: "Season with salt, black pepper, and toss gently.",
+      },
+    ],
+  },
+  {
+    title: "Green Pesto Pasta",
+    subtitle: "Simple & Fragrant",
+    author: "Chef Lucia",
+    minutes: "20",
+    image: "/recipe-images/Recipe-15.jpeg",
+    imageDetails: "/recipe-images/Recipe-15.png",
+    servings: "2 servings",
+    prepTime: "5 min",
+    cookTime: "15 min",
+    recipeDetails: ["2 servings", "5 min prep", "15 min cook"],
+    video: "https://www.youtube.com/embed/p7edUxCLOGw?si=R2b7APLa8MUCu45S",
+    isPublic: true,
+    category: "pasta",
+    ingredients: [
+      "200g pasta (spaghetti, penne, or fusilli)",
+      "1/2 cup basil pesto (store-bought or homemade)",
+      "1 tbsp olive oil",
+      "2 tbsp grated Parmesan cheese",
+      "Salt for pasta water",
+      "Black pepper to taste",
+      "Optional: cherry tomatoes, pine nuts, extra basil leaves",
+    ],
+    instructions: [
+      {
+        number: 1,
+        text: "Bring a pot of salted water to a boil and cook the pasta according to package instructions.",
+      },
+      {
+        number: 2,
+        text: "Reserve 1/4 cup of the pasta water, then drain the pasta.",
+      },
+      {
+        number: 3,
+        text: "In a large bowl or pan, mix the pesto with olive oil and a splash of pasta water.",
+      },
+      {
+        number: 4,
+        text: "Add the hot pasta and toss until evenly coated in the green pesto sauce.",
+      },
+      {
+        number: 5,
+        text: "Season with black pepper and sprinkle Parmesan on top.",
+      },
+      {
+        number: 6,
+        text: "Serve immediately with optional cherry tomatoes, pine nuts, or fresh basil.",
+      },
+    ],
+  },
+  {
+    title: "Asparagus Nut Crunch Salad",
+    subtitle: "Creamy & Fresh",
+    author: "Chef Emilia",
+    minutes: "15",
+    image: "/recipe-images/Recipe-16.jpeg",
+    imageDetails: "/recipe-images/Recipe-16.png",
+    servings: "2 servings",
+    prepTime: "10 min",
+    cookTime: "5 min",
+    recipeDetails: ["2 servings", "10 min prep", "5 min cook"],
+    video: "https://www.youtube.com/embed/JLEdb94FD_8?si=SEj9hlXmbAQCmjyQ",
+    isPublic: true,
+    category: "salads",
+    ingredients: [
+      "200g asparagus, trimmed",
+      "A handful of mixed nuts (walnuts, almonds, cashews)",
+      "1 cup mixed greens or arugula",
+      "1 tbsp olive oil",
+      "Salt to taste",
+      "Black pepper to taste",
+      "2 tbsp Greek yogurt or sour cream",
+      "1 tsp lemon juice",
+      "1 tsp honey",
+      "1 tsp olive oil",
+    ],
+    instructions: [
+      {
+        number: 1,
+        text: "Blanch the asparagus in boiling water for 2–3 minutes, then transfer to ice water. Pat dry and cut into pieces.",
+      },
+      {
+        number: 2,
+        text: "Toast the nuts lightly in a pan for 1–2 minutes until fragrant.",
+      },
+      {
+        number: 3,
+        text: "In a small bowl, whisk together the Greek yogurt, lemon juice, honey, and olive oil to create the white dressing.",
+      },
+      {
+        number: 4,
+        text: "Add the mixed greens to a bowl, then top with asparagus and toasted nuts.",
+      },
+      {
+        number: 5,
+        text: "Drizzle with the white dressing, season with salt and pepper, and toss gently before serving.",
+      },
+    ],
+  },
+  {
+    title: "Creamy Garlic Mussels",
+    subtitle: "Rich & Savory Seafood Classic",
+    author: "Chef Roland",
+    minutes: "25",
+    image: "/recipe-images/Recipe-17.jpeg",
+    imageDetails: "/recipe-images/Recipe-17.png",
+    servings: "2 servings",
+    prepTime: "10 min",
+    cookTime: "15 min",
+    recipeDetails: ["2 servings", "10 min prep", "15 min cook"],
+    video: "https://www.youtube.com/embed/ZH0hV6HwGZw?si=zPRWgb6BOM66ZAV2",
+    isPublic: true,
+    category: "seafood",
+    ingredients: [
+      "1 kg fresh mussels, cleaned and debearded",
+      "2 tbsp butter",
+      "3 garlic cloves, minced",
+      "1 small onion, finely chopped",
+      "1/2 cup white wine",
+      "1/2 cup heavy cream",
+      "Salt to taste",
+      "Black pepper to taste",
+      "Fresh parsley, chopped",
+      "Optional: lemon wedge for serving",
+    ],
+    instructions: [
+      {
+        number: 1,
+        text: "Heat butter in a large pot over medium heat. Add the chopped onion and sauté until soft.",
+      },
+      {
+        number: 2,
+        text: "Add garlic and cook for 30 seconds until fragrant.",
+      },
+      {
+        number: 3,
+        text: "Pour in the white wine and bring to a simmer.",
+      },
+      {
+        number: 4,
+        text: "Add the mussels, cover, and cook for 5–7 minutes until all shells open.",
+      },
+      {
+        number: 5,
+        text: "Remove mussels with a slotted spoon, leaving the liquid in the pot.",
+      },
+      {
+        number: 6,
+        text: "Add the heavy cream to the pot, stir, and simmer for 2 minutes to thicken the sauce.",
+      },
+      {
+        number: 7,
+        text: "Season with salt, pepper, and stir in fresh parsley.",
+      },
+      {
+        number: 8,
+        text: "Return mussels to the pot, toss gently in the creamy sauce, and serve warm with optional lemon.",
+      },
+    ],
+  },
+  {
+    title: "Steak with Sweet Potato Purée",
+    subtitle: "Tender & Comforting",
+    author: "Chef Danilo",
+    minutes: "35",
+    image: "/recipe-images/Recipe-18.jpeg",
+    imageDetails: "/recipe-images/Recipe-18.png",
+    servings: "2 servings",
+    prepTime: "10 min",
+    cookTime: "25 min",
+    recipeDetails: ["2 servings", "10 min prep", "25 min cook"],
+    video: "https://www.youtube.com/embed/05qThhjO2Gc?si=LVOjEhAWaw9IiT6t",
+    isPublic: true,
+    category: "dinner",
+    ingredients: [
+      "2 beef steaks (ribeye, sirloin, or tenderloin)",
+      "1 tbsp olive oil",
+      "Salt to taste",
+      "Black pepper to taste",
+      "1 garlic clove, smashed",
+      "1 sprig fresh thyme or rosemary",
+      "1 tbsp butter",
+      "2 medium sweet potatoes, peeled and diced",
+      "1 tbsp butter",
+      "2 tbsp milk or cream",
+      "Salt to taste",
+      "Optional: pinch of nutmeg",
+    ],
+    instructions: [
+      {
+        number: 1,
+        text: "Boil the diced sweet potatoes in salted water for 12–15 minutes until soft.",
+      },
+      {
+        number: 2,
+        text: "Drain the sweet potatoes and mash with butter, milk (or cream), salt, and optional nutmeg until smooth.",
+      },
+      {
+        number: 3,
+        text: "Season the steaks generously with salt and black pepper.",
+      },
+      {
+        number: 4,
+        text: "Heat olive oil in a pan over high heat. Add the steak and sear 2–3 minutes per side for medium-rare.",
+      },
+      {
+        number: 5,
+        text: "Add butter, garlic, and thyme/rosemary to the pan. Spoon the melted butter over the steaks for 30–40 seconds.",
+      },
+    ],
+  },
 ];
 
 const FAST_RECIPES = [
@@ -364,7 +807,7 @@ const FAST_RECIPES = [
     video: "https://www.youtube.com/embed/4nAfxzE02Gw?si=vVEXwL2vXPdv8cZ5",
     isPublic: true,
     category: "pasta",
-    featured: "fast", 
+    featured: "fast",
     ingredients: [
       "300g spaghetti",
       "150g bacon, diced",
@@ -400,46 +843,47 @@ const FAST_RECIPES = [
 
 async function seedRecipes() {
   try {
-    console.log('Connecting to MongoDB...');
+    console.log("Connecting to MongoDB...");
     await mongoose.connect(process.env.MONGO_URI);
-    console.log('Connected to MongoDB');
+    console.log("Connected to MongoDB");
 
     // Find or create a system user for these recipes
-    let systemUser = await User.findOne({ email: 'system@nurish.com' });
-    
+    let systemUser = await User.findOne({ email: "system@nurish.com" });
+
     if (!systemUser) {
-      console.log('Creating system user...');
+      console.log("Creating system user...");
       systemUser = await User.create({
-        name: 'Nurish Chefs',  
-        email: 'system@nurish.com',
-        password: 'system-generated-recipes-' + Date.now(),
-        favorites: []
+        name: "Nurish Chefs",
+        email: "system@nurish.com",
+        password: "system-generated-recipes-" + Date.now(),
+        favorites: [],
       });
-      console.log('System user created');
+      console.log("System user created");
     }
 
     const allRecipes = [...POPULAR_RECIPES, ...FAST_RECIPES];
-    
+
     console.log(`Seeding ${allRecipes.length} recipes...`);
-    
+
     // Delete existing featured recipes to avoid duplicates
-    await Recipe.deleteMany({ featured: { $in: ['popular', 'fast'] } });
-    console.log('Cleared existing featured recipes');
-    
+    // await Recipe.deleteMany({ featured: { $in: ["popular", "fast"] } });
+    // console.log("Cleared existing featured recipes");
+
     for (const recipeData of allRecipes) {
       // Create recipe with system user as author
-      const recipe = await Recipe.create({
-        ...recipeData,
-        author: systemUser._id,
-      });
-      
+      const recipe = await Recipe.findOneAndUpdate(
+        { title: recipeData.title }, // Find by title
+        { ...recipeData, author: systemUser._id }, // Update or create
+        { upsert: true, new: true } // upsert = create if doesn't exist
+      );
+
       console.log(`✓ Created recipe: ${recipe.title} (${recipe.featured})`);
     }
 
-    console.log('\n✅ Seeding completed successfully!');
+    console.log("\n✅ Seeding completed successfully!");
     process.exit(0);
   } catch (error) {
-    console.error('❌ Error seeding recipes:', error);
+    console.error("❌ Error seeding recipes:", error);
     process.exit(1);
   }
 }
